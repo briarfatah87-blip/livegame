@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LiveGame ⚽ - Watch Football Live Streams</title>
+  <meta name="description"
+    content="Watch live football matches with P2P streaming technology. Free, fast, high quality HD streams.">
+  <meta name="keywords"
+    content="football live stream, watch football, free football streams, P2P football, live game, soccer streams, live sports">
+  <meta name="author" content="LiveGame">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://livegame.com/">
+  <meta property="og:title" content="LiveGame ⚽ - Watch Football Live Streams">
+  <meta property="og:description"
+    content="Watch live football matches with P2P streaming technology. Free, fast, high quality HD streams.">
+  <meta property="og:image" content="/icons/icon-512.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://livegame.com/">
+  <meta property="twitter:title" content="LiveGame ⚽ - Watch Football Live Streams">
+  <meta property="twitter:description"
+    content="Watch live football matches with P2P streaming technology. Free, fast, high quality HD streams.">
+  <meta property="twitter:image" content="/icons/icon-512.png">
+
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0a0e17">
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/" class="navbar-brand">
+      <div class="logo-icon">⚽</div>
+      Live<span>Game</span>
+    </a>
+    <ul class="navbar-nav">
+      <li><a href="/" class="active" id="nav-home">🏠 Home</a></li>
+      <li><a href="/schedule.html" id="nav-schedule">📅 Schedule</a></li>
+      <li><a href="/admin.html" id="nav-admin">⚙️ Admin</a></li>
+    </ul>
+    <div class="navbar-right">
+      <div class="live-indicator">
+        <div class="live-dot"></div>
+        <span id="live-count">0</span> LIVE
+      </div>
+      <button id="pwa-install-btn" class="install-btn"><span class="install-icon">📲</span> Install App</button>
+    </div>
+  </nav>
+
+  <div class="main-content">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-tag">
+            🌐 P2P Powered Streaming
+          </div>
+          <h1 class="hero-title">
+            Watch Football<br><span class="highlight">Live & Free</span>
+          </h1>
+          <p class="hero-subtitle">
+            HD quality streams powered by P2P technology. No buffering, no delays — pure football action.
+          </p>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <div class="stat-value" id="stat-live">0</div>
+              <div class="stat-label">Live Now</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="stat-upcoming">0</div>
+              <div class="stat-label">Upcoming</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">P2P</div>
+              <div class="stat-label">Technology</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">HD</div>
+              <div class="stat-label">Quality</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container">
+
+      <!-- Live Matches -->
+      <section class="section" id="live-matches-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <div class="dot red"></div> Live Now
+          </h2>
+        </div>
+        <div id="live-grid" class="matches-grid">
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+        </div>
+        <div id="live-empty" class="empty-state" style="display:none;">
+          <div class="icon">📺</div>
+          <p>No live matches right now. Check the schedule for upcoming games!</p>
+        </div>
+      </section>
+
+      <!-- Upcoming Matches -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <div class="dot"></div> Upcoming Matches
+          </h2>
+          <a href="/schedule.html" class="view-all">View All →</a>
+        </div>
+        <div class="filters" id="upcoming-filters">
+          <button class="filter-btn active" data-filter="all">All Leagues</button>
+          <button class="filter-btn" data-filter="Premier League">Premier League</button>
+          <button class="filter-btn" data-filter="La Liga">La Liga</button>
+          <button class="filter-btn" data-filter="Champions League">Champions League</button>
+          <button class="filter-btn" data-filter="Serie A">Serie A</button>
+          <button class="filter-btn" data-filter="Bundesliga">Bundesliga</button>
+        </div>
+        <div id="upcoming-grid" class="matches-grid">
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+        </div>
+        <div id="upcoming-empty" class="empty-state" style="display:none;">
+          <div class="icon">🗓️</div>
+          <p>No upcoming matches found.</p>
+        </div>
+      </section>
+
+      <!-- Recent Results -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <div class="dot" style="background:var(--text-muted)"></div> Recent Results
+          </h2>
+        </div>
+        <div id="finished-grid" class="matches-grid">
+          <div class="skeleton skeleton-card"></div>
+        </div>
+        <div id="finished-empty" class="empty-state" style="display:none;">
+          <div class="icon">📋</div>
+          <p>No recent results.</p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">⚽ Live<span>Game</span></div>
+        <ul class="footer-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/schedule.html">Schedule</a></li>
+          <li><a href="/admin.html">Admin</a></li>
+        </ul>
+        <p class="footer-copy">© 2024 LiveGame. P2P Streaming Platform.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="/js/home.js?v=3"></script>
+  <script src="/js/pwa-register.js"></script>
+</body>
+
+</html>

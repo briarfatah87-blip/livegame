@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Match Schedule - LiveGame ⚽</title>
+  <meta name="description" content="Full football match schedule. Browse upcoming, live, and past matches.">
+  <meta name="keywords" content="football schedule, soccer match times, live football tonight, upcoming football matches, game times">
+  <meta name="author" content="LiveGame">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://livegame.com/schedule.html">
+  <meta property="og:title" content="Match Schedule - LiveGame ⚽">
+  <meta property="og:description" content="Full football match schedule. Browse upcoming, live, and past matches.">
+  <meta property="og:image" content="/icons/icon-512.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://livegame.com/schedule.html">
+  <meta property="twitter:title" content="Match Schedule - LiveGame ⚽">
+  <meta property="twitter:description" content="Full football match schedule. Browse upcoming, live, and past matches.">
+  <meta property="twitter:image" content="/icons/icon-512.png">
+
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0a0e17">
+  <style>
+    .schedule-header {
+      padding: 40px 0 20px;
+    }
+
+    .schedule-header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .schedule-header p {
+      color: var(--text-secondary);
+      font-size: 15px;
+    }
+
+    .schedule-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .schedule-search {
+      flex: 1;
+      min-width: 200px;
+      max-width: 360px;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+
+    .schedule-search:focus {
+      border-color: var(--border-accent);
+    }
+
+    .schedule-search::placeholder {
+      color: var(--text-muted);
+    }
+
+    .date-group {
+      margin-bottom: 36px;
+    }
+
+    .date-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 10px 0;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .schedule-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .schedule-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all var(--transition);
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .schedule-item:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(255, 255, 255, 0.1);
+      transform: translateX(3px);
+    }
+
+    .schedule-item.live-item {
+      border-color: rgba(255, 71, 87, 0.2);
+    }
+
+    .schedule-time {
+      font-size: 14px;
+      font-weight: 700;
+      min-width: 64px;
+      text-align: center;
+    }
+
+    .schedule-time.live-time {
+      color: var(--red);
+    }
+
+    .schedule-sep {
+      width: 1px;
+      height: 40px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .schedule-teams {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .schedule-team-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .schedule-team-logo {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+    }
+
+    .schedule-team-name {
+      font-weight: 600;
+    }
+
+    .schedule-score {
+      font-size: 18px;
+      font-weight: 800;
+      min-width: 48px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .schedule-badge {
+      flex-shrink: 0;
+    }
+
+    .schedule-competition {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <a href="/" class="navbar-brand">
+      <div class="logo-icon">⚽</div>
+      Live<span>Game</span>
+    </a>
+    <ul class="navbar-nav">
+      <li><a href="/">🏠 Home</a></li>
+      <li><a href="/schedule.html" class="active">📅 Schedule</a></li>
+      <li><a href="/admin.html">⚙️ Admin</a></li>
+    </ul>
+    <div class="navbar-right">
+      <div class="live-indicator">
+        <div class="live-dot"></div>
+        <span id="live-count">0</span> LIVE
+      </div>
+      <button id="pwa-install-btn" class="install-btn"><span class="install-icon">📲</span> Install App</button>
+    </div>
+  </nav>
+
+  <div class="main-content">
+    <div class="container">
+      <div class="schedule-header">
+        <h1>📅 Match Schedule</h1>
+        <p>All matches — live, upcoming, and recent results</p>
+      </div>
+
+      <div class="schedule-controls">
+        <input type="text" class="schedule-search" id="schedule-search"
+          placeholder="🔍 Search teams or competitions...">
+        <div class="filters" style="margin-bottom:0;">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn red-active" data-filter="live">🔴 Live</button>
+          <button class="filter-btn" data-filter="upcoming">Upcoming</button>
+          <button class="filter-btn" data-filter="finished">Finished</button>
+        </div>
+      </div>
+
+      <div id="schedule-container">
+        <div class="skeleton skeleton-card" style="height:80px;margin-bottom:10px;"></div>
+        <div class="skeleton skeleton-card" style="height:80px;margin-bottom:10px;"></div>
+        <div class="skeleton skeleton-card" style="height:80px;margin-bottom:10px;"></div>
+      </div>
+
+      <div id="schedule-empty" class="empty-state" style="display:none;">
+        <div class="icon">🗓️</div>
+        <p>No matches found.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">⚽ Live<span>Game</span></div>
+        <p class="footer-copy">© 2024 LiveGame. P2P Streaming Platform.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toast-container"></div>
+  <script src="/js/schedule.js"></script>
+  <script src="/js/pwa-register.js"></script>
+</body>
+
+</html>

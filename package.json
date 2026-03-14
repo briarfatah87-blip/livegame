@@ -1,0 +1,17 @@
+{
+  "name": "live-game",
+  "version": "1.0.0",
+  "description": "Football Live Streaming Website with P2P Media Loader",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.6.2",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.1",
+    "socket.io": "^4.8.3"
+  }
+}

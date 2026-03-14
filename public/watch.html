@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch Live - LiveGame ⚽</title>
+  <meta name="description" content="Watch live football match stream with P2P technology and real-time live chat.">
+  <meta name="keywords" content="watch live match, live football chat, live score, streaming football, P2P streaming">
+  <meta name="author" content="LiveGame">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://livegame.com/watch.html">
+  <meta property="og:title" content="Watch Live - LiveGame ⚽">
+  <meta property="og:description" content="Watch live football match stream with P2P technology and real-time live chat.">
+  <meta property="og:image" content="/icons/icon-512.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://livegame.com/watch.html">
+  <meta property="twitter:title" content="Watch Live - LiveGame ⚽">
+  <meta property="twitter:description" content="Watch live football match stream with P2P technology and real-time live chat.">
+  <meta property="twitter:image" content="/icons/icon-512.png">
+
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/watch.css">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0a0e17">
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/" class="navbar-brand">
+      <div class="logo-icon">⚽</div>
+      Live<span>Game</span>
+    </a>
+    <ul class="navbar-nav">
+      <li><a href="/" id="nav-home">🏠 Home</a></li>
+      <li><a href="/schedule.html" id="nav-schedule">📅 Schedule</a></li>
+      <li><a href="/admin.html" id="nav-admin">⚙️ Admin</a></li>
+    </ul>
+    <div class="navbar-right">
+      <div class="live-indicator" id="watch-live-badge" style="display:none;">
+        <div class="live-dot"></div>
+        LIVE
+      </div>
+      <button id="pwa-install-btn" class="install-btn"><span class="install-icon">📲</span> Install App</button>
+    </div>
+  </nav>
+
+  <div class="main-content">
+    <div class="watch-layout">
+
+      <!-- Left: Player + Info -->
+      <div class="player-area">
+
+        <!-- Match Header -->
+        <div class="match-header">
+          <div class="match-meta">
+            <a href="/" style="color:var(--text-muted);font-size:13px;">← Back</a>
+            <div class="match-competition" id="match-competition">⚽ Football</div>
+            <div class="match-badge-pill live" id="status-badge" style="display:none;">
+              <div class="live-dot"></div> LIVE
+            </div>
+          </div>
+          <div class="match-actions">
+            <button class="action-btn" id="share-btn" onclick="shareMatch()">
+              🔗 Share
+            </button>
+          </div>
+        </div>
+
+        <!-- Video Player -->
+        <div class="player-wrapper" id="player-container">
+          <video id="video-player" controls playsinline></video>
+          <iframe id="iframe-player" class="hidden" frameborder="0" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+          <div class="player-overlay" id="player-overlay">
+            <div class="player-loading-text" id="overlay-text">Loading stream...</div>
+          </div>
+        </div>
+
+        <!-- P2P Stats Bar -->
+        <div class="p2p-stats-bar" id="p2p-stats-bar">
+          <div class="p2p-stat">
+            <span class="p2p-stat-icon">🌐</span>
+            <span class="p2p-stat-value" id="p2p-peers">0</span>
+            <span class="p2p-stat-label">Peers</span>
+          </div>
+          <div class="p2p-stat">
+            <span class="p2p-stat-icon">📥</span>
+            <span class="p2p-stat-value" id="p2p-down">0 KB/s</span>
+            <span class="p2p-stat-label">P2P Download</span>
+          </div>
+          <div class="p2p-stat">
+            <span class="p2p-stat-icon">📤</span>
+            <span class="p2p-stat-value" id="p2p-up">0 KB/s</span>
+            <span class="p2p-stat-label">P2P Upload</span>
+          </div>
+          <div class="p2p-stat">
+            <span class="p2p-stat-icon">✅</span>
+            <span class="p2p-stat-value" id="p2p-saved">0%</span>
+            <span class="p2p-stat-label">CDN Saved</span>
+          </div>
+          <div class="p2p-badge">🔗 P2P Active</div>
+        </div>
+
+        <!-- Score Card -->
+        <div class="score-card" id="score-card">
+          <div class="score-card-teams">
+            <div class="score-card-team">
+              <div class="score-card-logo">
+                <img id="home-logo" src="" alt="" onerror="this.style.display='none'">
+              </div>
+              <div class="score-card-name" id="home-name">Home</div>
+            </div>
+
+            <div class="score-card-score">
+              <div class="big-score">
+                <span class="big-score-num" id="score-home">0</span>
+                <span class="big-score-sep">—</span>
+                <span class="big-score-num" id="score-away">0</span>
+              </div>
+              <div class="match-minute-badge" id="minute-badge" style="display:none;">
+                ⏱️ <span id="match-minute">0</span>'
+              </div>
+              <div class="match-time" id="match-time-display"></div>
+            </div>
+
+            <div class="score-card-team">
+              <div class="score-card-logo">
+                <img id="away-logo" src="" alt="" onerror="this.style.display='none'">
+              </div>
+              <div class="score-card-name" id="away-name">Away</div>
+            </div>
+          </div>
+          <div class="match-venue" id="match-venue" style="display:none;">
+            📍 <span id="stadium-name"></span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: Live Chat -->
+      <div class="chat-panel">
+        <div class="chat-header">
+          <div class="chat-title">
+            💬 Live Chat
+          </div>
+          <div class="chat-online-count" id="viewer-count">👁 0 viewers</div>
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+          <!-- Messages injected here -->
+        </div>
+
+        <div class="chat-typing" id="typing-indicator"></div>
+
+        <div class="chat-input-area">
+          <!-- Username Prompt (shown if no username set) -->
+          <div class="username-prompt" id="username-prompt">
+            <p>Enter your name to join the chat</p>
+            <div class="username-input-row">
+              <input type="text" id="username-input" class="chat-text-input" placeholder="Your name..." maxlength="20"
+                autocomplete="off" />
+              <button class="send-btn" id="join-chat-btn" onclick="joinChat()">→</button>
+            </div>
+          </div>
+
+          <!-- Chat Input (shown after username set) -->
+          <div id="chat-input-main" style="display:none;">
+            <div class="chat-message-row" style="position:relative;">
+              <div class="emoji-wrap">
+                <button class="emoji-btn" id="emoji-toggle" onclick="toggleEmoji()">😊</button>
+                <div class="emoji-picker" id="emoji-picker"></div>
+              </div>
+              <input type="text" id="message-input" class="chat-text-input" placeholder="Say something..."
+                maxlength="300" autocomplete="off" />
+              <button class="send-btn" id="send-btn" onclick="sendMessage()">➤</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- hls.js -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
+  <!-- p2p-media-loader core + hlsjs -->
+  <script src="https://cdn.jsdelivr.net/npm/p2p-media-loader-core@latest/build/p2p-media-loader-core.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p2p-media-loader-hlsjs@latest/build/p2p-media-loader-hlsjs.min.js"></script>
+  <!-- Socket.IO -->
+  <script src="/socket.io/socket.io.js"></script>
+
+  <script src="/js/chat.js?v=2"></script>
+  <script src="/js/player.js?v=2"></script>
+  <script src="/js/pwa-register.js?v=2"></script>
+</body>
+
+</html>

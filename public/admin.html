@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - LiveGame ⚽</title>
+  <meta name="description" content="Admin panel for managing LiveGame matches and users.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0a0e17">
+  <style>
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: calc(100vh - 64px);
+    }
+
+    .admin-sidebar {
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      padding: 24px 0;
+      position: sticky;
+      top: 64px;
+      height: calc(100vh - 64px);
+      overflow-y: auto;
+    }
+
+    .admin-sidebar-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0 20px 12px;
+    }
+
+    .admin-nav {
+      list-style: none;
+    }
+
+    .admin-nav li a,
+    .admin-nav li button {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      font-family: var(--font);
+      transition: all var(--transition);
+    }
+
+    .admin-nav li a:hover,
+    .admin-nav li button:hover {
+      color: var(--text-primary);
+      background: var(--bg-glass);
+    }
+
+    .admin-nav li a.active,
+    .admin-nav li button.active {
+      color: var(--accent);
+      background: var(--accent-dim);
+      border-right: 2px solid var(--accent);
+    }
+
+    .admin-content {
+      padding: 32px;
+    }
+
+    .admin-panel {
+      display: none;
+    }
+
+    .admin-panel.active {
+      display: block;
+    }
+
+    .admin-panel-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .form-input {
+      padding: 11px 16px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+      transition: border-color var(--transition);
+      font-family: var(--font);
+    }
+
+    .form-input:focus {
+      border-color: var(--border-accent);
+    }
+
+    .form-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    select.form-input {
+      cursor: pointer;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .btn {
+      padding: 11px 24px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      border: none;
+      font-family: var(--font);
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg-primary);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    .btn-danger {
+      background: var(--red);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      filter: brightness(1.1);
+    }
+
+    .btn-ghost {
+      background: var(--bg-glass);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .btn-ghost:hover {
+      color: var(--text-primary);
+      background: var(--bg-glass-hover);
+    }
+
+    .matches-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .matches-table th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .matches-table td {
+      padding: 14px 16px;
+      font-size: 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .matches-table tr:hover td {
+      background: var(--bg-glass);
+    }
+
+    .cell-teams {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .cell-teams .t {
+      font-weight: 600;
+    }
+
+    .cell-teams .t.vs {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .table-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .tbl-btn {
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-family: var(--font);
+      transition: all var(--transition);
+    }
+
+    .tbl-btn.edit {
+      background: var(--blue-dim);
+      border: 1px solid rgba(41, 121, 255, 0.3);
+      color: #5c9aff;
+    }
+
+    .tbl-btn.del {
+      background: var(--red-dim);
+      border: 1px solid rgba(255, 71, 87, 0.3);
+      color: var(--red);
+    }
+
+    .tbl-btn:hover {
+      filter: brightness(1.2);
+    }
+
+    .admin-login {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 64px);
+      gap: 24px;
+    }
+
+    .login-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .login-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .login-title {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .login-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+
+    .ban-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .ban-table th {
+      text-align: left;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ban-table td {
+      padding: 12px 14px;
+      font-size: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    @media (max-width: 900px) {
+      .admin-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .admin-sidebar {
+        height: auto;
+        position: static;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <a href="/" class="navbar-brand">
+      <div class="logo-icon">⚽</div>
+      Live<span>Game</span>
+    </a>
+    <ul class="navbar-nav">
+      <li><a href="/">🏠 Home</a></li>
+      <li><a href="/schedule.html">📅 Schedule</a></li>
+      <li><a href="/admin.html" class="active">⚙️ Admin</a></li>
+    </ul>
+    <div class="navbar-right">
+      <button id="pwa-install-btn" class="install-btn"><span class="install-icon">📲</span> Install App</button>
+    </div>
+  </nav>
+
+  <div class="main-content">
+
+    <!-- Login Screen -->
+    <div class="admin-login" id="login-screen">
+      <div class="login-card">
+        <div class="login-icon">🔐</div>
+        <div class="login-title">Admin Panel</div>
+        <div class="login-subtitle">Enter your admin password to continue</div>
+        <div class="form-group">
+          <input type="password" id="admin-password" class="form-input" placeholder="Admin password..."
+            autocomplete="current-password">
+        </div>
+        <div style="margin-top:16px;">
+          <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="login()">🔓 Login</button>
+        </div>
+        <p id="login-error" style="color:var(--red);font-size:13px;margin-top:12px;display:none;">Wrong password. Try
+          again.</p>
+      </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="admin-dashboard" style="display:none;">
+      <div class="admin-layout">
+
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+          <div class="admin-sidebar-title">Management</div>
+          <ul class="admin-nav">
+            <li><button class="active" onclick="showPanel('matches')" id="nav-matches">📋 Matches</button></li>
+            <li><button onclick="showPanel('add-match')" id="nav-add-match">➕ Add Match</button></li>
+            <li><button onclick="showPanel('bans')" id="nav-bans">🚫 Banned Users</button></li>
+          </ul>
+          <div class="admin-sidebar-title" style="margin-top:24px;">Account</div>
+          <ul class="admin-nav">
+            <li><button onclick="logout()">🚪 Logout</button></li>
+          </ul>
+        </aside>
+
+        <!-- Content -->
+        <div class="admin-content">
+
+          <!-- Matches Panel -->
+          <div class="admin-panel active" id="panel-matches">
+            <div class="admin-panel-title">📋 All Matches</div>
+            <div style="margin-bottom:16px;">
+              <button class="btn btn-primary" onclick="showPanel('add-match')">➕ Add New Match</button>
+            </div>
+            <div
+              style="overflow-x:auto; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md);">
+              <table class="matches-table" id="matches-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Teams</th>
+                    <th>Score</th>
+                    <th>Status</th>
+                    <th>Competition</th>
+                    <th>Time</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="matches-tbody">
+                  <tr>
+                    <td colspan="7" style="text-align:center;color:var(--text-muted);padding:30px;">Loading...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Add Match Panel -->
+          <div class="admin-panel" id="panel-add-match">
+            <div class="admin-panel-title" id="match-form-title">➕ Add New Match</div>
+            <input type="hidden" id="edit-match-id">
+            <div
+              style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;">
+              <div class="form-grid">
+                <div class="form-group full">
+                  <label class="form-label">Match Title *</label>
+                  <input type="text" class="form-input" id="f-title" placeholder="e.g. Premier League - Matchday 29">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Home Team *</label>
+                  <input type="text" class="form-input" id="f-home" placeholder="e.g. Arsenal">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Home Team Logo URL</label>
+                  <input type="text" class="form-input" id="f-home-logo" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Away Team *</label>
+                  <input type="text" class="form-input" id="f-away" placeholder="e.g. Chelsea">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Away Team Logo URL</label>
+                  <input type="text" class="form-input" id="f-away-logo" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Competition</label>
+                  <input type="text" class="form-input" id="f-competition" placeholder="e.g. Premier League">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Stadium</label>
+                  <input type="text" class="form-input" id="f-stadium" placeholder="e.g. Wembley Stadium">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Start Time *</label>
+                  <input type="datetime-local" class="form-input" id="f-start-time">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Status</label>
+                  <select class="form-input" id="f-status">
+                    <option value="upcoming">Upcoming</option>
+                    <option value="live">Live</option>
+                    <option value="finished">Finished</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Home Score</label>
+                  <input type="number" class="form-input" id="f-score-home" value="0" min="0">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Away Score</label>
+                  <input type="number" class="form-input" id="f-score-away" value="0" min="0">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Minute (if live)</label>
+                  <input type="number" class="form-input" id="f-minute" value="0" min="0" max="120">
+                </div>
+                <div class="form-group full">
+                  <label class="form-label">Stream URL (HLS .m3u8)</label>
+                  <input type="text" class="form-input" id="f-stream-url"
+                    placeholder="https://example.com/stream/index.m3u8">
+                </div>
+                <div class="form-group full">
+                  <label class="form-label">SEO Description (Title & Meta)</label>
+                  <textarea class="form-input" id="f-seo-description" rows="3" 
+                    placeholder="e.g. Watch Live Real Madrid vs Elche CF - Free HD Football Stream"></textarea>
+                </div>
+              </div>
+              <div class="form-actions" style="margin-top:24px;">
+                <button class="btn btn-primary" id="submit-match-btn" onclick="submitMatch()">✅ Save Match</button>
+                <button class="btn btn-ghost" onclick="showPanel('matches')">Cancel</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bans Panel -->
+          <div class="admin-panel" id="panel-bans">
+            <div class="admin-panel-title">🚫 Banned Users</div>
+            <div
+              style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:24px;">
+              <div style="font-size:15px;font-weight:600;margin-bottom:16px;">Ban a User</div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <input type="text" class="form-input" id="ban-username" placeholder="Username to ban..."
+                  style="flex:1;min-width:180px;">
+                <input type="text" class="form-input" id="ban-reason" placeholder="Reason (optional)..."
+                  style="flex:1;min-width:180px;">
+                <button class="btn btn-danger" onclick="banUser()">🚫 Ban</button>
+              </div>
+            </div>
+            <div
+              style="overflow-x:auto;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);">
+              <table class="ban-table">
+                <thead>
+                  <tr>
+                    <th>Username</th>
+                    <th>Reason</th>
+                    <th>Banned At</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="ban-tbody">
+                  <tr>
+                    <td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px;">Loading...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+  <script src="/js/admin.js"></script>
+  <script src="/js/pwa-register.js"></script>
+</body>
+
+</html>

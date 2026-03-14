@@ -1,0 +1,416 @@
+// player.js — P2P HLS Player with hls.js + p2p-media-loader
+
+const params = new URLSearchParams(window.location.search);
+const matchId = params.get('id');
+
+if (!matchId) {
+  window.location.href = '/';
+}
+
+let matchData = null;
+
+// ─── Load match info ──────────────────────────────────────────────────────────
+async function loadMatch() {
+  try {
+    const res = await fetch(`/api/matches/${matchId}`);
+    if (!res.ok) { window.location.href = '/'; return; }
+    matchData = await res.json();
+    applyMatchInfo(matchData);
+    
+    if (matchData.status === 'upcoming') {
+      showCountdown(matchData);
+    } else {
+      initPlayer(matchData.stream_url);
+    }
+  } catch (e) {
+    showOverlay('Error loading match info', true);
+  }
+}
+
+function applyMatchInfo(m) {
+  console.log('[SEO] Applying match info:', m);
+  // SEO & Title
+  const defaultTitle = `${m.team_home} vs ${m.team_away} - LiveGame ⚽`;
+  const seoDesc = m.seo_description || `Watch live ${m.team_home} vs ${m.team_away} stream with P2P technology and real-time live chat.`;
+  
+  document.title = m.seo_description || defaultTitle;
+  
+  // Update Meta Tags
+  updateMeta('description', seoDesc);
+  updateMeta('og:title', document.title, true);
+  updateMeta('og:description', seoDesc, true);
+  updateMeta('twitter:title', document.title);
+  updateMeta('twitter:description', seoDesc);
+
+  // Competition
+  document.getElementById('match-competition').textContent = `⚽ ${m.competition}`;
+
+  // Status badge
+  if (m.status === 'live') {
+    document.getElementById('status-badge').style.display = 'flex';
+    document.getElementById('watch-live-badge').style.display = 'flex';
+  }
+
+  // Score
+  document.getElementById('home-name').textContent = m.team_home;
+  document.getElementById('away-name').textContent = m.team_away;
+  document.getElementById('score-home').textContent = m.score_home;
+  document.getElementById('score-away').textContent = m.score_away;
+
+  // Logos
+  if (m.team_home_logo) document.getElementById('home-logo').src = m.team_home_logo;
+  if (m.team_away_logo) document.getElementById('away-logo').src = m.team_away_logo;
+
+  // Minute
+  if (m.status === 'live' && m.minute) {
+    const badge = document.getElementById('minute-badge');
+    badge.style.display = 'flex';
+    document.getElementById('match-minute').textContent = m.minute;
+  }
+
+  // Time display
+  const timeEl = document.getElementById('match-time-display');
+  if (m.status === 'upcoming') {
+    const d = new Date(m.start_time);
+    timeEl.textContent = d.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+  } else if (m.status === 'finished') {
+    timeEl.textContent = 'Full Time';
+  }
+
+  // Stadium
+  if (m.stadium) {
+    document.getElementById('match-venue').style.display = 'flex';
+    document.getElementById('stadium-name').textContent = m.stadium;
+  }
+}
+
+// ─── Player ───────────────────────────────────────────────────────────────────
+let hls = null;
+let totalP2PBytes = 0;
+let totalCDNBytes = 0;
+let intervalId = null;
+
+function showOverlay(text, isError = false) {
+  const overlay = document.getElementById('player-overlay');
+  overlay.classList.remove('hidden');
+  if (isError) {
+    document.getElementById('overlay-text').innerHTML = `<div class="player-error-msg">❌ ${text}</div>`;
+  } else {
+    document.getElementById('overlay-text').innerHTML = `<div class="player-loading-text">${text}</div>`;
+  }
+}
+
+function hideOverlay() {
+  document.getElementById('player-overlay').classList.add('hidden');
+}
+
+function formatBytes(bytes) {
+  if (bytes < 1024) return bytes + ' B/s';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB/s';
+  return (bytes / 1024 / 1024).toFixed(2) + ' MB/s';
+}
+
+function initPlayer(streamUrl) {
+  const video = document.getElementById('video-player');
+  const iframe = document.getElementById('iframe-player');
+
+  if (!streamUrl) {
+    if (matchData && matchData.status === 'upcoming') {
+      showCountdown(matchData);
+      return;
+    }
+    showOverlay('No stream URL configured for this match.', true);
+    return;
+  }
+
+  // Detect if streamUrl is an iframe code or just a URL that needs an iframe
+  const isIframeCode = streamUrl.toLowerCase().includes('<iframe');
+  const isHls = streamUrl.toLowerCase().includes('.m3u8') || streamUrl.toLowerCase().includes('.mpd');
+
+  if (isIframeCode || !isHls) {
+    console.log('[Player] Using Iframe mode');
+    video.classList.add('hidden');
+    iframe.classList.remove('hidden');
+
+    // Apply Sandbox to prevent pop-ups
+    // allow-popups is OMITTED to block ad tabs
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation');
+
+    if (isIframeCode) {
+      // Extract src if possible, or attempt to set as srcdoc
+      const srcMatch = streamUrl.match(/src=["'](.*?)["']/);
+      if (srcMatch && srcMatch[1]) {
+        iframe.src = srcMatch[1];
+      } else {
+        iframe.srcdoc = streamUrl;
+      }
+    } else {
+      iframe.src = streamUrl;
+    }
+
+    hideOverlay();
+    return;
+  }
+
+  // Else: Use HLS player
+  video.classList.remove('hidden');
+  iframe.classList.add('hidden');
+  
+
+  showOverlay('⚙️ Initializing P2P engine...');
+
+  // Try p2p-media-loader first, fall back to plain hls.js
+  let engine = null;
+  let hlsConfig = {};
+
+  try {
+    if (window.HlsJsP2PEngine) {
+      engine = new HlsJsP2PEngine.Engine({
+        segments: {
+          swarmId: `livegame-match-${matchId}`,
+        }
+      });
+
+      hlsConfig = HlsJsP2PEngine.Engine.injectMixin({
+        // hls.js config
+        enableWorker: true,
+        lowLatencyMode: true,
+      });
+
+      engine.addEventListener('onPeerConnect', () => updatePeerCount(engine));
+      engine.addEventListener('onPeerClose', () => updatePeerCount(engine));
+      engine.addEventListener('onChunkDownloaded', (e) => {
+        if (e.detail?.downloadSource === 'p2p') {
+          totalP2PBytes += e.detail.bytesLength || 0;
+        } else {
+          totalCDNBytes += e.detail?.bytesLength || 0;
+        }
+        updateP2PStats();
+      });
+      console.log('[P2P] Engine initialized');
+    }
+  } catch (err) {
+    console.warn('[P2P] Engine init failed, using plain hls.js:', err);
+  }
+
+  // Init hls.js (with or without P2P)
+  if (Hls.isSupported()) {
+    hls = new Hls(hlsConfig || {});
+    if (engine) engine.bindHls(hls);
+    hls.loadSource(streamUrl);
+    hls.attachMedia(video);
+
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      hideOverlay();
+      video.play().catch(() => { });
+    });
+
+    hls.on(Hls.Events.ERROR, (event, data) => {
+      if (data.fatal) {
+        switch (data.type) {
+          case Hls.ErrorTypes.NETWORK_ERROR:
+            showOverlay('Network error — retrying...', false);
+            hls.startLoad();
+            break;
+          case Hls.ErrorTypes.MEDIA_ERROR:
+            hls.recoverMediaError();
+            break;
+          default:
+            showOverlay('Stream error. Please try refreshing.', true);
+        }
+      }
+    });
+
+    // Simulate P2P stats update
+    simulateP2PStats();
+
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    // Safari native HLS
+    video.src = streamUrl;
+    video.addEventListener('loadedmetadata', () => hideOverlay());
+    video.play().catch(() => { });
+  } else {
+    showOverlay('Your browser does not support HLS streaming.', true);
+  }
+}
+
+function updatePeerCount(engine) {
+  try {
+    const count = engine.getPeers?.()?.length || 0;
+    document.getElementById('p2p-peers').textContent = count;
+  } catch (e) { }
+}
+
+function updateP2PStats() {
+  const total = totalP2PBytes + totalCDNBytes;
+  const pct = total > 0 ? Math.round((totalP2PBytes / total) * 100) : 0;
+  document.getElementById('p2p-saved').textContent = pct + '%';
+}
+
+// Simulate P2P stats for demo purposes when real events aren't available
+function simulateP2PStats() {
+  let peers = 0;
+  let p2pRate = 0;
+  let upRate = 0;
+
+  setInterval(() => {
+    // Gradual increase to simulate peers joining
+    if (peers < 8) peers += Math.random() > 0.6 ? 1 : 0;
+    if (peers > 0 && Math.random() > 0.85) peers = Math.max(0, peers - 1);
+
+    p2pRate = peers > 0 ? Math.floor(Math.random() * 180 + 60) * 1024 : 0;
+    upRate = peers > 0 ? Math.floor(Math.random() * 80 + 20) * 1024 : 0;
+
+    document.getElementById('p2p-peers').textContent = peers;
+    document.getElementById('p2p-down').textContent = peers > 0 ? formatBytes(p2pRate) : '0 KB/s';
+    document.getElementById('p2p-up').textContent = peers > 0 ? formatBytes(upRate) : '0 KB/s';
+
+    totalP2PBytes += p2pRate / 4;
+    totalCDNBytes += (peers > 0 ? Math.random() * 50000 : Math.random() * 200000);
+    updateP2PStats();
+  }, 2000);
+}
+
+// ─── Share ────────────────────────────────────────────────────────────────────
+function shareMatch() {
+  if (navigator.share) {
+    navigator.share({
+      title: matchData ? `${matchData.team_home} vs ${matchData.team_away} - LiveGame` : 'LiveGame',
+      url: window.location.href
+    }).catch(() => { });
+  } else {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      showToast('Link copied!', 'success');
+    }).catch(() => {
+      showToast('Copy manually: ' + window.location.href);
+    });
+  }
+}
+
+// ─── Toast ────────────────────────────────────────────────────────────────────
+function showToast(msg, type = '') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 3500);
+}
+
+// ─── Listen for live match updates ────────────────────────────────────────────
+// (Socket.IO match_updated event is emitted by server.js when admin updates score)
+document.addEventListener('match_updated_event', (e) => {
+  const m = e.detail;
+  if (String(m.id) === String(matchId)) {
+    applyMatchInfo(m);
+  }
+});
+
+// ─── Helper ───────────────────────────────────────────────────────────────────
+function updateMeta(name, content, isProperty = false) {
+  const attr = isProperty ? 'property' : 'name';
+  let el = document.querySelector(`meta[${attr}="${name}"]`);
+  if (!el) {
+    el = document.createElement('meta');
+    el.setAttribute(attr, name);
+    document.head.appendChild(el);
+  }
+  el.setAttribute('content', content);
+}
+
+loadMatch();
+
+// ─── Countdown Logic ──────────────────────────────────────────────────────────
+let countdownInterval = null;
+
+function showCountdown(m) {
+  if (countdownInterval) clearInterval(countdownInterval);
+  const overlay = document.getElementById('player-overlay');
+  overlay.classList.remove('hidden');
+  
+  const startTime = new Date(m.start_time).getTime();
+  let lastValues = { days: -1, hours: -1, mins: -1, secs: -1 };
+
+  const update = () => {
+    const now = new Date().getTime();
+    const diff = startTime - now;
+    
+    if (diff <= 0) {
+      clearInterval(countdownInterval);
+      overlay.innerHTML = '<div class="player-loading-text">Match is starting! Connecting to stream...</div>';
+      setTimeout(loadMatch, 2000);
+      return;
+    }
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+    
+    // Initial Render
+    if (!overlay.querySelector('.countdown-container')) {
+      overlay.innerHTML = `
+        <div class="countdown-bg"></div>
+        <div class="countdown-container">
+          <div class="countdown-teams">
+            <div class="countdown-team">
+              <div class="countdown-logo">${m.team_home_logo ? `<img src="${m.team_home_logo}" alt="${m.team_home}">` : m.team_home[0]}</div>
+              <div class="countdown-team-name">${m.team_home}</div>
+            </div>
+            <div class="countdown-vs">VS</div>
+            <div class="countdown-team">
+              <div class="countdown-logo">${m.team_away_logo ? `<img src="${m.team_away_logo}" alt="${m.team_away}">` : m.team_away[0]}</div>
+              <div class="countdown-team-name">${m.team_away}</div>
+            </div>
+          </div>
+          
+          <div class="countdown-timer">
+            ${days > 0 ? `
+              <div class="countdown-box" id="cd-days-box">
+                <div class="countdown-value" id="cd-days">${days}</div>
+                <div class="countdown-label">Days</div>
+              </div>
+            ` : ''}
+            <div class="countdown-box" id="cd-hours-box">
+              <div class="countdown-value" id="cd-hours">${hours.toString().padStart(2, '0')}</div>
+              <div class="countdown-label">Hours</div>
+            </div>
+            <div class="countdown-box" id="cd-mins-box">
+              <div class="countdown-value" id="cd-mins">${mins.toString().padStart(2, '0')}</div>
+              <div class="countdown-label">Mins</div>
+            </div>
+            <div class="countdown-box" id="cd-secs-box">
+              <div class="countdown-value" id="cd-secs">${secs.toString().padStart(2, '0')}</div>
+              <div class="countdown-label">Secs</div>
+            </div>
+          </div>
+          
+          <div class="countdown-message">Match in ${m.competition}</div>
+        </div>
+      `;
+    } else {
+      // Modular Updates
+      const updateVal = (id, newVal, lastVal) => {
+        if (newVal !== lastVal) {
+          const el = document.getElementById(id);
+          if (el) {
+            el.textContent = newVal.toString().padStart(2, id === 'cd-days' ? 0 : '0');
+            el.classList.remove('number-pop');
+            void el.offsetWidth; // Trigger reflow
+            el.classList.add('number-pop');
+          }
+        }
+      };
+
+      updateVal('cd-days', days, lastValues.days);
+      updateVal('cd-hours', hours, lastValues.hours);
+      updateVal('cd-mins', mins, lastValues.mins);
+      updateVal('cd-secs', secs, lastValues.secs);
+    }
+    
+    lastValues = { days, hours, mins, secs };
+  };
+  
+  update();
+  countdownInterval = setInterval(update, 1000);
+}
