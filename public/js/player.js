@@ -57,9 +57,33 @@ function applyMatchInfo(m) {
   document.getElementById('score-home').textContent = m.score_home;
   document.getElementById('score-away').textContent = m.score_away;
 
-  // Logos
-  if (m.team_home_logo) document.getElementById('home-logo').src = m.team_home_logo;
-  if (m.team_away_logo) document.getElementById('away-logo').src = m.team_away_logo;
+  // Logos with Fallbacks
+  const setLogo = (imgId, containerId, logoUrl, teamName) => {
+    const img = document.getElementById(imgId);
+    const container = document.getElementById(containerId);
+    if (!container || !img) return;
+
+    if (logoUrl) {
+      img.src = logoUrl;
+      img.classList.remove('hidden');
+      container.classList.remove('has-fallback');
+      container.textContent = ''; // Clear fallback text
+      container.appendChild(img); // Re-add img if it was cleared
+      
+      img.onerror = () => {
+        img.classList.add('hidden');
+        container.classList.add('has-fallback');
+        container.textContent = teamName ? teamName[0].toUpperCase() : '?';
+      };
+    } else {
+      img.classList.add('hidden');
+      container.classList.add('has-fallback');
+      container.textContent = teamName ? teamName[0].toUpperCase() : '?';
+    }
+  };
+
+  setLogo('home-logo', 'home-logo-container', m.team_home_logo, m.team_home);
+  setLogo('away-logo', 'away-logo-container', m.team_away_logo, m.team_away);
 
   // Minute
   if (m.status === 'live' && m.minute) {

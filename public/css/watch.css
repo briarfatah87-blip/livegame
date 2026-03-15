@@ -263,6 +263,18 @@
   font-weight: 700;
 }
 
+.score-card-logo.has-fallback {
+    background: var(--bg-glass-hover);
+    color: var(--accent);
+    font-size: 24px;
+    font-weight: 800;
+    border-color: var(--border-accent);
+}
+
+.score-card-logo img.hidden {
+    display: none;
+}
+
 .score-card-score {
   display: flex;
   flex-direction: column;
