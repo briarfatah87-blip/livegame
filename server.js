@@ -101,6 +101,7 @@ app.get('/api/matches/:id', (req, res) => {
 // POST create match (admin)
 app.post('/api/matches', requireAdmin, (req, res) => {
   const {
+    title, team_home, team_home_logo, team_away, team_away_logo,
     stream_url = '', start_time, status = 'upcoming', competition = 'Football',
     competition_logo = '', stadium = '', score_home = 0, score_away = 0, minute = 0,
     seo_description = ''
