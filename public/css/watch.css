@@ -776,3 +776,15 @@
     .countdown-teams { gap: 15px; }
     .countdown-logo { border-radius: 20px; }
 }
+
+/* ─── RTL Watch ─────────────────────────────────────────────────────────────── */
+[dir="rtl"] .player-area { padding: 20px 20px 20px 0; }
+[dir="rtl"] .chat-panel { border-left: none; border-right: 1px solid var(--border); }
+[dir="rtl"] .p2p-badge { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .chat-msg { text-align: right; }
+[dir="rtl"] .chat-typing { text-align: right; }
+[dir="rtl"] .emoji-picker { right: auto; left: 0; }
+@media (max-width: 1024px) {
+  [dir="rtl"] .chat-panel { border-right: none; border-top: 1px solid var(--border); }
+  [dir="rtl"] .player-area { padding: 16px; }
+}

@@ -180,6 +180,11 @@
       align-items: center;
       gap: 5px;
     }
+
+    [dir="rtl"] .schedule-item:hover { transform: translateX(-3px); }
+    [dir="rtl"] .date-label { text-align: right; }
+    [dir="rtl"] .schedule-header { text-align: right; }
+    [dir="rtl"] .schedule-teams { text-align: right; }
   </style>
 </head>
 
@@ -191,34 +196,36 @@
       Live<span>Game</span>
     </a>
     <ul class="navbar-nav">
-      <li><a href="/">🏠 Home</a></li>
-      <li><a href="/schedule.html" class="active">📅 Schedule</a></li>
-      <li><a href="/admin.html">⚙️ Admin</a></li>
+      <li><a href="/" data-i18n="nav.home">🏠 Home</a></li>
+      <li><a href="/schedule.html" class="active" data-i18n="nav.schedule">📅 Schedule</a></li>
+      <li><a href="/admin.html" data-i18n="nav.admin">⚙️ Admin</a></li>
     </ul>
     <div class="navbar-right">
+      <button class="lang-toggle" id="lang-toggle" onclick="toggleLang()">عربي</button>
+      <button class="theme-toggle" id="theme-toggle" title="Toggle theme">🌙</button>
       <div class="live-indicator">
         <div class="live-dot"></div>
         <span id="live-count">0</span> LIVE
       </div>
-      <button id="pwa-install-btn" class="install-btn"><span class="install-icon">📲</span> Install App</button>
+      <button id="pwa-install-btn" class="install-btn"><span class="install-icon">📲</span> <span data-i18n="nav.installApp">Install App</span></button>
     </div>
   </nav>
 
   <div class="main-content">
     <div class="container">
       <div class="schedule-header">
-        <h1>📅 Match Schedule</h1>
-        <p>All matches — live, upcoming, and recent results</p>
+        <h1 data-i18n="schedule.title">📅 Match Schedule</h1>
+        <p data-i18n="schedule.subtitle">All matches — live, upcoming, and recent results</p>
       </div>
 
       <div class="schedule-controls">
         <input type="text" class="schedule-search" id="schedule-search"
-          placeholder="🔍 Search teams or competitions...">
+          data-i18n="schedule.search" data-i18n-attr="placeholder" placeholder="🔍 Search teams or competitions...">
         <div class="filters" style="margin-bottom:0;">
-          <button class="filter-btn active" data-filter="all">All</button>
-          <button class="filter-btn red-active" data-filter="live">🔴 Live</button>
-          <button class="filter-btn" data-filter="upcoming">Upcoming</button>
-          <button class="filter-btn" data-filter="finished">Finished</button>
+          <button class="filter-btn active" data-filter="all" data-i18n="filter.all">All</button>
+          <button class="filter-btn red-active" data-filter="live" data-i18n="filter.live">🔴 Live</button>
+          <button class="filter-btn" data-filter="upcoming" data-i18n="filter.upcoming">Upcoming</button>
+          <button class="filter-btn" data-filter="finished" data-i18n="filter.finished">Finished</button>
         </div>
       </div>
 
@@ -230,7 +237,7 @@
 
       <div id="schedule-empty" class="empty-state" style="display:none;">
         <div class="icon">🗓️</div>
-        <p>No matches found.</p>
+        <p data-i18n="empty.noMatches">No matches found.</p>
       </div>
     </div>
   </div>
@@ -239,12 +246,14 @@
     <div class="container">
       <div class="footer-inner">
         <div class="footer-brand">⚽ Live<span>Game</span></div>
-        <p class="footer-copy">© 2024 LiveGame. P2P Streaming Platform.</p>
+        <p class="footer-copy" data-i18n="footer.copy">© 2024 LiveGame. P2P Streaming Platform.</p>
       </div>
     </div>
   </footer>
 
   <div class="toast-container" id="toast-container"></div>
+  <script src="/js/lang.js"></script>
+  <script src="/js/theme.js"></script>
   <script src="/js/schedule.js"></script>
   <script src="/js/pwa-register.js"></script>
 </body>

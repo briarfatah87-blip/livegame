@@ -334,6 +334,18 @@
         grid-template-columns: 1fr;
       }
     }
+
+    [dir="rtl"] .admin-sidebar { border-right: none; border-left: 1px solid var(--border); }
+    [dir="rtl"] .admin-nav li a.active,
+    [dir="rtl"] .admin-nav li button.active { border-right: none; border-left: 2px solid var(--accent); }
+    [dir="rtl"] .admin-nav li a,
+    [dir="rtl"] .admin-nav li button { text-align: right; }
+    [dir="rtl"] .admin-content { text-align: right; }
+    [dir="rtl"] .form-label { text-align: right; }
+    [dir="rtl"] .matches-table th { text-align: right; }
+    [dir="rtl"] .ban-table th { text-align: right; }
+    [dir="rtl"] .cell-teams { text-align: right; }
+    [dir="rtl"] .login-card { text-align: center; }
   </style>
 </head>
 
@@ -345,12 +357,14 @@
       Live<span>Game</span>
     </a>
     <ul class="navbar-nav">
-      <li><a href="/">🏠 Home</a></li>
-      <li><a href="/schedule.html">📅 Schedule</a></li>
-      <li><a href="/admin.html" class="active">⚙️ Admin</a></li>
+      <li><a href="/" data-i18n="nav.home">🏠 Home</a></li>
+      <li><a href="/schedule.html" data-i18n="nav.schedule">📅 Schedule</a></li>
+      <li><a href="/admin.html" class="active" data-i18n="nav.admin">⚙️ Admin</a></li>
     </ul>
     <div class="navbar-right">
-      <button id="pwa-install-btn" class="install-btn"><span class="install-icon">📲</span> Install App</button>
+      <button class="lang-toggle" id="lang-toggle" onclick="toggleLang()">عربي</button>
+      <button class="theme-toggle" id="theme-toggle" title="Toggle theme">🌙</button>
+      <button id="pwa-install-btn" class="install-btn"><span class="install-icon">📲</span> <span data-i18n="nav.installApp">Install App</span></button>
     </div>
   </nav>
 
@@ -360,16 +374,16 @@
     <div class="admin-login" id="login-screen">
       <div class="login-card">
         <div class="login-icon">🔐</div>
-        <div class="login-title">Admin Panel</div>
-        <div class="login-subtitle">Enter your admin password to continue</div>
+        <div class="login-title" data-i18n="admin.title">Admin Panel</div>
+        <div class="login-subtitle" data-i18n="admin.subtitle">Enter your admin password to continue</div>
         <div class="form-group">
-          <input type="password" id="admin-password" class="form-input" placeholder="Admin password..."
+          <input type="password" id="admin-password" class="form-input" data-i18n="admin.password" data-i18n-attr="placeholder" placeholder="Admin password..."
             autocomplete="current-password">
         </div>
         <div style="margin-top:16px;">
-          <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="login()">🔓 Login</button>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="login()" data-i18n="admin.login">🔓 Login</button>
         </div>
-        <p id="login-error" style="color:var(--red);font-size:13px;margin-top:12px;display:none;">Wrong password. Try
+        <p id="login-error" style="color:var(--red);font-size:13px;margin-top:12px;display:none;" data-i18n="admin.wrongPassword">Wrong password. Try
           again.</p>
       </div>
     </div>
@@ -380,15 +394,15 @@
 
         <!-- Sidebar -->
         <aside class="admin-sidebar">
-          <div class="admin-sidebar-title">Management</div>
+          <div class="admin-sidebar-title" data-i18n="admin.management">Management</div>
           <ul class="admin-nav">
-            <li><button class="active" onclick="showPanel('matches')" id="nav-matches">📋 Matches</button></li>
-            <li><button onclick="showPanel('add-match')" id="nav-add-match">➕ Add Match</button></li>
-            <li><button onclick="showPanel('bans')" id="nav-bans">🚫 Banned Users</button></li>
+            <li><button class="active" onclick="showPanel('matches')" id="nav-matches" data-i18n="admin.matches">📋 Matches</button></li>
+            <li><button onclick="showPanel('add-match')" id="nav-add-match" data-i18n="admin.addMatch">➕ Add Match</button></li>
+            <li><button onclick="showPanel('bans')" id="nav-bans" data-i18n="admin.bannedUsers">🚫 Banned Users</button></li>
           </ul>
-          <div class="admin-sidebar-title" style="margin-top:24px;">Account</div>
+          <div class="admin-sidebar-title" style="margin-top:24px;" data-i18n="admin.account">Account</div>
           <ul class="admin-nav">
-            <li><button onclick="logout()">🚪 Logout</button></li>
+            <li><button onclick="logout()" data-i18n="admin.logout">🚪 Logout</button></li>
           </ul>
         </aside>
 
@@ -397,9 +411,9 @@
 
           <!-- Matches Panel -->
           <div class="admin-panel active" id="panel-matches">
-            <div class="admin-panel-title">📋 All Matches</div>
+            <div class="admin-panel-title" data-i18n="admin.allMatches">📋 All Matches</div>
             <div style="margin-bottom:16px;">
-              <button class="btn btn-primary" onclick="showPanel('add-match')">➕ Add New Match</button>
+              <button class="btn btn-primary" onclick="showPanel('add-match')" data-i18n="admin.addNewMatch">➕ Add New Match</button>
             </div>
             <div
               style="overflow-x:auto; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md);">
@@ -407,17 +421,17 @@
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Teams</th>
-                    <th>Score</th>
-                    <th>Status</th>
-                    <th>Competition</th>
-                    <th>Time</th>
-                    <th>Actions</th>
+                    <th data-i18n="admin.teams">Teams</th>
+                    <th data-i18n="admin.score">Score</th>
+                    <th data-i18n="admin.status">Status</th>
+                    <th data-i18n="admin.competition">Competition</th>
+                    <th data-i18n="admin.time">Time</th>
+                    <th data-i18n="admin.actions">Actions</th>
                   </tr>
                 </thead>
                 <tbody id="matches-tbody">
                   <tr>
-                    <td colspan="7" style="text-align:center;color:var(--text-muted);padding:30px;">Loading...</td>
+                    <td colspan="7" style="text-align:center;color:var(--text-muted);padding:30px;" data-i18n="admin.loading">Loading...</td>
                   </tr>
                 </tbody>
               </table>
@@ -426,93 +440,93 @@
 
           <!-- Add Match Panel -->
           <div class="admin-panel" id="panel-add-match">
-            <div class="admin-panel-title" id="match-form-title">➕ Add New Match</div>
+            <div class="admin-panel-title" id="match-form-title" data-i18n="admin.addNewMatch">➕ Add New Match</div>
             <input type="hidden" id="edit-match-id">
             <div
               style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;">
               <div class="form-grid">
                 <div class="form-group full">
-                  <label class="form-label">Match Title *</label>
+                  <label class="form-label" data-i18n="admin.matchTitle">Match Title *</label>
                   <input type="text" class="form-input" id="f-title" placeholder="e.g. Premier League - Matchday 29">
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Home Team *</label>
+                  <label class="form-label" data-i18n="admin.homeTeam">Home Team *</label>
                   <input type="text" class="form-input" id="f-home" placeholder="e.g. Arsenal">
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Home Team Logo URL</label>
+                  <label class="form-label" data-i18n="admin.homeTeamLogo">Home Team Logo URL</label>
                   <input type="text" class="form-input" id="f-home-logo" placeholder="https://...">
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Away Team *</label>
+                  <label class="form-label" data-i18n="admin.awayTeam">Away Team *</label>
                   <input type="text" class="form-input" id="f-away" placeholder="e.g. Chelsea">
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Away Team Logo URL</label>
+                  <label class="form-label" data-i18n="admin.awayTeamLogo">Away Team Logo URL</label>
                   <input type="text" class="form-input" id="f-away-logo" placeholder="https://...">
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Competition</label>
+                  <label class="form-label" data-i18n="admin.competition">Competition</label>
                   <input type="text" class="form-input" id="f-competition" placeholder="e.g. Premier League">
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Stadium</label>
+                  <label class="form-label" data-i18n="admin.stadium">Stadium</label>
                   <input type="text" class="form-input" id="f-stadium" placeholder="e.g. Wembley Stadium">
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Start Time *</label>
+                  <label class="form-label" data-i18n="admin.startTime">Start Time *</label>
                   <input type="datetime-local" class="form-input" id="f-start-time">
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Status</label>
+                  <label class="form-label" data-i18n="admin.status">Status</label>
                   <select class="form-input" id="f-status">
-                    <option value="upcoming">Upcoming</option>
-                    <option value="live">Live</option>
-                    <option value="finished">Finished</option>
+                    <option value="upcoming" data-i18n="status.upcoming">Upcoming</option>
+                    <option value="live" data-i18n="status.live">Live</option>
+                    <option value="finished" data-i18n="status.finished">Finished</option>
                   </select>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Home Score</label>
+                  <label class="form-label" data-i18n="admin.homeScore">Home Score</label>
                   <input type="number" class="form-input" id="f-score-home" value="0" min="0">
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Away Score</label>
+                  <label class="form-label" data-i18n="admin.awayScore">Away Score</label>
                   <input type="number" class="form-input" id="f-score-away" value="0" min="0">
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Minute (if live)</label>
+                  <label class="form-label" data-i18n="admin.minute">Minute (if live)</label>
                   <input type="number" class="form-input" id="f-minute" value="0" min="0" max="120">
                 </div>
                 <div class="form-group full">
-                  <label class="form-label">Stream URL (HLS .m3u8)</label>
+                  <label class="form-label" data-i18n="admin.streamUrl">Stream URL (HLS .m3u8)</label>
                   <input type="text" class="form-input" id="f-stream-url"
                     placeholder="https://example.com/stream/index.m3u8">
                 </div>
                 <div class="form-group full">
-                  <label class="form-label">SEO Description (Title & Meta)</label>
+                  <label class="form-label" data-i18n="admin.seoDesc">SEO Description (Title & Meta)</label>
                   <textarea class="form-input" id="f-seo-description" rows="3" 
                     placeholder="e.g. Watch Live Real Madrid vs Elche CF - Free HD Football Stream"></textarea>
                 </div>
               </div>
               <div class="form-actions" style="margin-top:24px;">
-                <button class="btn btn-primary" id="submit-match-btn" onclick="submitMatch()">✅ Save Match</button>
-                <button class="btn btn-ghost" onclick="showPanel('matches')">Cancel</button>
+                <button class="btn btn-primary" id="submit-match-btn" onclick="submitMatch()" data-i18n="admin.saveMatch">✅ Save Match</button>
+                <button class="btn btn-ghost" onclick="showPanel('matches')" data-i18n="admin.cancel">Cancel</button>
               </div>
             </div>
           </div>
 
           <!-- Bans Panel -->
           <div class="admin-panel" id="panel-bans">
-            <div class="admin-panel-title">🚫 Banned Users</div>
+            <div class="admin-panel-title" data-i18n="admin.bannedUsers">🚫 Banned Users</div>
             <div
               style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:24px;">
-              <div style="font-size:15px;font-weight:600;margin-bottom:16px;">Ban a User</div>
+              <div style="font-size:15px;font-weight:600;margin-bottom:16px;" data-i18n="admin.banUser">Ban a User</div>
               <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                <input type="text" class="form-input" id="ban-username" placeholder="Username to ban..."
+                <input type="text" class="form-input" id="ban-username" data-i18n="admin.usernameBan" data-i18n-attr="placeholder" placeholder="Username to ban..."
                   style="flex:1;min-width:180px;">
-                <input type="text" class="form-input" id="ban-reason" placeholder="Reason (optional)..."
+                <input type="text" class="form-input" id="ban-reason" data-i18n="admin.reasonBan" data-i18n-attr="placeholder" placeholder="Reason (optional)..."
                   style="flex:1;min-width:180px;">
-                <button class="btn btn-danger" onclick="banUser()">🚫 Ban</button>
+                <button class="btn btn-danger" onclick="banUser()" data-i18n="admin.ban">🚫 Ban</button>
               </div>
             </div>
             <div
@@ -520,15 +534,15 @@
               <table class="ban-table">
                 <thead>
                   <tr>
-                    <th>Username</th>
-                    <th>Reason</th>
-                    <th>Banned At</th>
-                    <th>Action</th>
+                    <th data-i18n="admin.username">Username</th>
+                    <th data-i18n="admin.reason">Reason</th>
+                    <th data-i18n="admin.bannedAt">Banned At</th>
+                    <th data-i18n="admin.action">Action</th>
                   </tr>
                 </thead>
                 <tbody id="ban-tbody">
                   <tr>
-                    <td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px;">Loading...</td>
+                    <td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px;" data-i18n="admin.loading">Loading...</td>
                   </tr>
                 </tbody>
               </table>
@@ -542,6 +556,8 @@
   </div>
 
   <div class="toast-container" id="toast-container"></div>
+  <script src="/js/lang.js"></script>
+  <script src="/js/theme.js"></script>
   <script src="/js/admin.js"></script>
   <script src="/js/pwa-register.js"></script>
 </body>

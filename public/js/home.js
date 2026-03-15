@@ -16,10 +16,11 @@ function getCompetitionEmoji(competition) {
 
 function formatTime(isoString, forCard = true) {
   const d = new Date(isoString);
+  const locale = window.__lang === 'ar' ? 'ar' : [];
   if (forCard) {
-    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
   }
-  return d.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+  return d.toLocaleString(locale, { dateStyle: 'medium', timeStyle: 'short' });
 }
 
 function teamLogoHtml(logo, name) {
@@ -51,10 +52,10 @@ function renderMatchCard(match) {
     : `<div class="match-time">${formatTime(match.start_time)}</div>`;
 
   const watchBtn = isLive
-    ? `<button class="watch-btn live-btn">▶ Watch Live</button>`
+    ? `<button class="watch-btn live-btn">${t('card.watchLive')}</button>`
     : isFinished
-    ? `<button class="watch-btn disabled-btn">✅ Finished</button>`
-    : `<button class="watch-btn disabled-btn">⏰ Upcoming</button>`;
+    ? `<button class="watch-btn disabled-btn">${t('card.finished')}</button>`
+    : `<button class="watch-btn disabled-btn">${t('card.upcoming')}</button>`;
 
   return `
     <a href="${href}" class="match-card ${match.status}">
@@ -116,7 +117,7 @@ async function loadMatches() {
 
   } catch (err) {
     console.error('Failed to load matches:', err);
-    showToast('Failed to load matches', 'error');
+    showToast(t('home.failedLoadMatches'), 'error');
   }
 }
 

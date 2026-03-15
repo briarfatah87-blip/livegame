@@ -23,7 +23,7 @@ async function loadMatch() {
       initPlayer(matchData.stream_url);
     }
   } catch (e) {
-    showOverlay('Error loading match info', true);
+    showOverlay(t('player.errorLoadingMatch'), true);
   }
 }
 
@@ -74,7 +74,7 @@ function applyMatchInfo(m) {
     const d = new Date(m.start_time);
     timeEl.textContent = d.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
   } else if (m.status === 'finished') {
-    timeEl.textContent = 'Full Time';
+    timeEl.textContent = t('watch.fullTime');
   }
 
   // Stadium
@@ -119,7 +119,7 @@ function initPlayer(streamUrl) {
       showCountdown(matchData);
       return;
     }
-    showOverlay('No stream URL configured for this match.', true);
+    showOverlay(t('watch.noStream'), true);
     return;
   }
 
@@ -157,7 +157,7 @@ function initPlayer(streamUrl) {
   iframe.classList.add('hidden');
   
 
-  showOverlay('⚙️ Initializing P2P engine...');
+  showOverlay(t('watch.initP2P'));
 
   // Try p2p-media-loader first, fall back to plain hls.js
   let engine = null;
@@ -209,14 +209,14 @@ function initPlayer(streamUrl) {
       if (data.fatal) {
         switch (data.type) {
           case Hls.ErrorTypes.NETWORK_ERROR:
-            showOverlay('Network error — retrying...', false);
+            showOverlay(t('watch.networkError'), false);
             hls.startLoad();
             break;
           case Hls.ErrorTypes.MEDIA_ERROR:
             hls.recoverMediaError();
             break;
           default:
-            showOverlay('Stream error. Please try refreshing.', true);
+            showOverlay(t('watch.streamError'), true);
         }
       }
     });
@@ -230,7 +230,7 @@ function initPlayer(streamUrl) {
     video.addEventListener('loadedmetadata', () => hideOverlay());
     video.play().catch(() => { });
   } else {
-    showOverlay('Your browser does not support HLS streaming.', true);
+    showOverlay(t('watch.browserNoHls'), true);
   }
 }
 
@@ -280,9 +280,9 @@ function shareMatch() {
     }).catch(() => { });
   } else {
     navigator.clipboard.writeText(window.location.href).then(() => {
-      showToast('Link copied!', 'success');
+      showToast(t('watch.linkCopied'), 'success');
     }).catch(() => {
-      showToast('Copy manually: ' + window.location.href);
+      showToast(t('player.copyManually') + window.location.href);
     });
   }
 }
@@ -337,7 +337,7 @@ function showCountdown(m) {
     
     if (diff <= 0) {
       clearInterval(countdownInterval);
-      overlay.innerHTML = '<div class="player-loading-text">Match is starting! Connecting to stream...</div>';
+      overlay.innerHTML = '<div class="player-loading-text">' + t('watch.matchStarting') + '</div>';
       setTimeout(loadMatch, 2000);
       return;
     }
@@ -368,24 +368,24 @@ function showCountdown(m) {
             ${days > 0 ? `
               <div class="countdown-box" id="cd-days-box">
                 <div class="countdown-value" id="cd-days">${days}</div>
-                <div class="countdown-label">Days</div>
+                <div class="countdown-label">${t('countdown.days')}</div>
               </div>
             ` : ''}
             <div class="countdown-box" id="cd-hours-box">
               <div class="countdown-value" id="cd-hours">${hours.toString().padStart(2, '0')}</div>
-              <div class="countdown-label">Hours</div>
+              <div class="countdown-label">${t('countdown.hours')}</div>
             </div>
             <div class="countdown-box" id="cd-mins-box">
               <div class="countdown-value" id="cd-mins">${mins.toString().padStart(2, '0')}</div>
-              <div class="countdown-label">Mins</div>
+              <div class="countdown-label">${t('countdown.mins')}</div>
             </div>
             <div class="countdown-box" id="cd-secs-box">
               <div class="countdown-value" id="cd-secs">${secs.toString().padStart(2, '0')}</div>
-              <div class="countdown-label">Secs</div>
+              <div class="countdown-label">${t('countdown.secs')}</div>
             </div>
           </div>
           
-          <div class="countdown-message">Match in ${m.competition}</div>
+          <div class="countdown-message">${t('countdown.matchIn')} ${m.competition}</div>
         </div>
       `;
     } else {

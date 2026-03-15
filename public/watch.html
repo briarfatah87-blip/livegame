@@ -40,16 +40,18 @@
       Live<span>Game</span>
     </a>
     <ul class="navbar-nav">
-      <li><a href="/" id="nav-home">🏠 Home</a></li>
-      <li><a href="/schedule.html" id="nav-schedule">📅 Schedule</a></li>
-      <li><a href="/admin.html" id="nav-admin">⚙️ Admin</a></li>
+      <li><a href="/" id="nav-home" data-i18n="nav.home">🏠 Home</a></li>
+      <li><a href="/schedule.html" id="nav-schedule" data-i18n="nav.schedule">📅 Schedule</a></li>
+      <li><a href="/admin.html" id="nav-admin" data-i18n="nav.admin">⚙️ Admin</a></li>
     </ul>
     <div class="navbar-right">
+      <button class="lang-toggle" id="lang-toggle" onclick="toggleLang()">عربي</button>
+      <button class="theme-toggle" id="theme-toggle" title="Toggle theme">🌙</button>
       <div class="live-indicator" id="watch-live-badge" style="display:none;">
         <div class="live-dot"></div>
         LIVE
       </div>
-      <button id="pwa-install-btn" class="install-btn"><span class="install-icon">📲</span> Install App</button>
+      <button id="pwa-install-btn" class="install-btn"><span class="install-icon">📲</span> <span data-i18n="nav.installApp">Install App</span></button>
     </div>
   </nav>
 
@@ -62,15 +64,15 @@
         <!-- Match Header -->
         <div class="match-header">
           <div class="match-meta">
-            <a href="/" style="color:var(--text-muted);font-size:13px;">← Back</a>
-            <div class="match-competition" id="match-competition">⚽ Football</div>
+            <a href="/" style="color:var(--text-muted);font-size:13px;" data-i18n="watch.back">← Back</a>
+            <div class="match-competition" id="match-competition" data-i18n="watch.football">⚽ Football</div>
             <div class="match-badge-pill live" id="status-badge" style="display:none;">
               <div class="live-dot"></div> LIVE
             </div>
           </div>
           <div class="match-actions">
             <button class="action-btn" id="share-btn" onclick="shareMatch()">
-              🔗 Share
+              <span data-i18n="watch.share">🔗 Share</span>
             </button>
           </div>
         </div>
@@ -80,7 +82,7 @@
           <video id="video-player" controls playsinline></video>
           <iframe id="iframe-player" class="hidden" frameborder="0" allowfullscreen allow="autoplay; encrypted-media"></iframe>
           <div class="player-overlay" id="player-overlay">
-            <div class="player-loading-text" id="overlay-text">Loading stream...</div>
+            <div class="player-loading-text" id="overlay-text" data-i18n="watch.loading">Loading stream...</div>
           </div>
         </div>
 
@@ -89,24 +91,24 @@
           <div class="p2p-stat">
             <span class="p2p-stat-icon">🌐</span>
             <span class="p2p-stat-value" id="p2p-peers">0</span>
-            <span class="p2p-stat-label">Peers</span>
+            <span class="p2p-stat-label" data-i18n="watch.peers">Peers</span>
           </div>
           <div class="p2p-stat">
             <span class="p2p-stat-icon">📥</span>
             <span class="p2p-stat-value" id="p2p-down">0 KB/s</span>
-            <span class="p2p-stat-label">P2P Download</span>
+            <span class="p2p-stat-label" data-i18n="watch.p2pDownload">P2P Download</span>
           </div>
           <div class="p2p-stat">
             <span class="p2p-stat-icon">📤</span>
             <span class="p2p-stat-value" id="p2p-up">0 KB/s</span>
-            <span class="p2p-stat-label">P2P Upload</span>
+            <span class="p2p-stat-label" data-i18n="watch.p2pUpload">P2P Upload</span>
           </div>
           <div class="p2p-stat">
             <span class="p2p-stat-icon">✅</span>
             <span class="p2p-stat-value" id="p2p-saved">0%</span>
-            <span class="p2p-stat-label">CDN Saved</span>
+            <span class="p2p-stat-label" data-i18n="watch.cdnSaved">CDN Saved</span>
           </div>
-          <div class="p2p-badge">🔗 P2P Active</div>
+          <div class="p2p-badge" data-i18n="watch.p2pActive">🔗 P2P Active</div>
         </div>
 
         <!-- Score Card -->
@@ -116,7 +118,7 @@
               <div class="score-card-logo">
                 <img id="home-logo" src="" alt="" onerror="this.style.display='none'">
               </div>
-              <div class="score-card-name" id="home-name">Home</div>
+              <div class="score-card-name" id="home-name" data-i18n="watch.home">Home</div>
             </div>
 
             <div class="score-card-score">
@@ -135,7 +137,7 @@
               <div class="score-card-logo">
                 <img id="away-logo" src="" alt="" onerror="this.style.display='none'">
               </div>
-              <div class="score-card-name" id="away-name">Away</div>
+              <div class="score-card-name" id="away-name" data-i18n="watch.away">Away</div>
             </div>
           </div>
           <div class="match-venue" id="match-venue" style="display:none;">
@@ -148,7 +150,7 @@
       <!-- Right: Live Chat -->
       <div class="chat-panel">
         <div class="chat-header">
-          <div class="chat-title">
+          <div class="chat-title" data-i18n="chat.title">
             💬 Live Chat
           </div>
           <div class="chat-online-count" id="viewer-count">👁 0 viewers</div>
@@ -163,9 +165,9 @@
         <div class="chat-input-area">
           <!-- Username Prompt (shown if no username set) -->
           <div class="username-prompt" id="username-prompt">
-            <p>Enter your name to join the chat</p>
+            <p data-i18n="chat.enterName">Enter your name to join the chat</p>
             <div class="username-input-row">
-              <input type="text" id="username-input" class="chat-text-input" placeholder="Your name..." maxlength="20"
+              <input type="text" id="username-input" class="chat-text-input" data-i18n="chat.yourName" data-i18n-attr="placeholder" placeholder="Your name..." maxlength="20"
                 autocomplete="off" />
               <button class="send-btn" id="join-chat-btn" onclick="joinChat()">→</button>
             </div>
@@ -178,7 +180,7 @@
                 <button class="emoji-btn" id="emoji-toggle" onclick="toggleEmoji()">😊</button>
                 <div class="emoji-picker" id="emoji-picker"></div>
               </div>
-              <input type="text" id="message-input" class="chat-text-input" placeholder="Say something..."
+              <input type="text" id="message-input" class="chat-text-input" data-i18n="chat.saySomething" data-i18n-attr="placeholder" placeholder="Say something..."
                 maxlength="300" autocomplete="off" />
               <button class="send-btn" id="send-btn" onclick="sendMessage()">➤</button>
             </div>
@@ -200,6 +202,8 @@
   <!-- Socket.IO -->
   <script src="/socket.io/socket.io.js"></script>
 
+  <script src="/js/lang.js"></script>
+  <script src="/js/theme.js"></script>
   <script src="/js/chat.js?v=2"></script>
   <script src="/js/player.js?v=2"></script>
   <script src="/js/pwa-register.js?v=2"></script>

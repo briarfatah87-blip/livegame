@@ -84,8 +84,8 @@ function showPanel(panel, skipReset = false) {
   if (panel === 'matches') loadMatchesTable();
   if (panel === 'add-match' && !skipReset) {
     resetForm();
-    document.getElementById('match-form-title').textContent = '➕ Add New Match';
-    document.getElementById('submit-match-btn').textContent = '✅ Save Match';
+    document.getElementById('match-form-title').textContent = t('admin.addNewMatchTitle');
+    document.getElementById('submit-match-btn').textContent = t('admin.saveMatchBtn');
   }
   if (panel === 'bans') loadBansTable();
 }
@@ -93,12 +93,12 @@ function showPanel(panel, skipReset = false) {
 // ─── Matches ──────────────────────────────────────────────────────────────────
 async function loadMatchesTable() {
   const tbody = document.getElementById('matches-tbody');
-  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px;">' + t('admin.loading') + '</td></tr>';
   try {
     const res = await fetch('/api/matches');
     const matches = await res.json();
     if (!matches.length) {
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px;">No matches yet. Add one!</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px;">' + t('admin.noMatches') + '</td></tr>';
       return;
     }
     tbody.innerHTML = matches.map(m => `
@@ -124,7 +124,7 @@ async function loadMatchesTable() {
       </tr>
     `).join('');
   } catch (e) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--red);padding:24px;">Error loading matches.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--red);padding:24px;">${t('admin.errorLoadingMatches')}</td></tr>`;
   }
 }
 
@@ -153,11 +153,11 @@ async function editMatch(id) {
     dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
     document.getElementById('f-start-time').value = dt.toISOString().slice(0, 16);
 
-    document.getElementById('match-form-title').textContent = '✏️ Edit Match';
-    document.getElementById('submit-match-btn').textContent = '✅ Update Match';
+    document.getElementById('match-form-title').textContent = t('admin.editMatchTitle');
+    document.getElementById('submit-match-btn').textContent = t('admin.updateMatchBtn');
     showPanel('add-match', true);
   } catch (e) {
-    showToast('Failed to load match', 'error');
+    showToast(t('admin.failedLoadMatch'), 'error');
   }
 }
 
@@ -168,7 +168,7 @@ async function submitMatch() {
   const start_time_raw = document.getElementById('f-start-time').value;
 
   if (!title || !team_home || !team_away || !start_time_raw) {
-    showToast('Please fill in all required fields (*)', 'error');
+    showToast(t('admin.fillRequired'), 'error');
     return;
   }
 
@@ -190,7 +190,7 @@ async function submitMatch() {
   };
 
   const btn = document.getElementById('submit-match-btn');
-  btn.textContent = 'Saving...';
+  btn.textContent = t('admin.saving');
   btn.disabled = true;
 
   try {
@@ -203,33 +203,33 @@ async function submitMatch() {
     });
 
     if (res.ok) {
-      showToast(editingMatchId ? 'Match updated!' : 'Match created!', 'success');
+      showToast(editingMatchId ? t('admin.matchUpdated') : t('admin.matchCreated'), 'success');
       editingMatchId = null;
       showPanel('matches');
     } else {
       const err = await res.json();
-      showToast(err.error || 'Error saving match', 'error');
+      showToast(err.error || t('admin.errorSaving'), 'error');
     }
   } catch (e) {
-    showToast('Network error', 'error');
+    showToast(t('admin.networkError'), 'error');
   } finally {
     btn.disabled = false;
   }
 }
 
 async function deleteMatch(id) {
-  if (!confirm(`Delete match #${id}? This will also delete its chat history.`)) return;
+  if (!confirm(t('admin.deleteConfirm'))) return;
   try {
     const res = await fetch(`/api/matches/${id}`, {
       method: 'DELETE',
       headers: { 'x-admin-token': adminToken }
     });
     if (res.ok) {
-      showToast('Match deleted', 'success');
+      showToast(t('admin.matchDeleted'), 'success');
       loadMatchesTable();
     }
   } catch (e) {
-    showToast('Error deleting match', 'error');
+    showToast(t('admin.errorDeleting'), 'error');
   }
 }
 
@@ -250,7 +250,7 @@ function resetForm() {
 async function banUser() {
   const username = document.getElementById('ban-username').value.trim();
   const reason = document.getElementById('ban-reason').value.trim();
-  if (!username) { showToast('Enter a username', 'error'); return; }
+  if (!username) { showToast(t('admin.enterUsername'), 'error'); return; }
 
   try {
     const res = await fetch('/api/ban', {
@@ -259,13 +259,13 @@ async function banUser() {
       body: JSON.stringify({ username, reason })
     });
     if (res.ok) {
-      showToast(`${username} banned`, 'success');
+      showToast(`${username} ${t('admin.userBanned')}`, 'success');
       document.getElementById('ban-username').value = '';
       document.getElementById('ban-reason').value = '';
       loadBansTable();
     }
   } catch (e) {
-    showToast('Error banning user', 'error');
+    showToast(t('admin.errorBanning'), 'error');
   }
 }
 
@@ -276,11 +276,11 @@ async function unbanUser(username) {
       headers: { 'x-admin-token': adminToken }
     });
     if (res.ok) {
-      showToast(`${username} unbanned`, 'success');
+      showToast(`${username} ${t('admin.userUnbanned')}`, 'success');
       loadBansTable();
     }
   } catch (e) {
-    showToast('Error unbanning', 'error');
+    showToast(t('admin.errorUnbanning'), 'error');
   }
 }
 
@@ -290,7 +290,7 @@ async function loadBansTable() {
     const res = await fetch('/api/bans', { headers: { 'x-admin-token': adminToken } });
     const bans = await res.json();
     if (!bans.length) {
-      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px;">No banned users.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px;">' + t('admin.noBans') + '</td></tr>';
       return;
     }
     tbody.innerHTML = bans.map(b => `
@@ -298,10 +298,10 @@ async function loadBansTable() {
         <td style="font-weight:600;">${b.username}</td>
         <td style="color:var(--text-muted);">${b.reason || '—'}</td>
         <td style="font-size:12px;color:var(--text-muted);">${new Date(b.banned_at).toLocaleString()}</td>
-        <td><button class="tbl-btn edit" onclick="unbanUser('${b.username}')">✅ Unban</button></td>
+        <td><button class="tbl-btn edit" onclick="unbanUser('${b.username}')">${t('admin.unban')}</button></td>
       </tr>
     `).join('');
   } catch (e) {
-    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--red);padding:20px;">Error loading bans.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--red);padding:20px;">' + t('admin.errorLoadingBans') + '</td></tr>';
   }
 }

@@ -70,21 +70,22 @@ function connectSocket() {
   });
 
   socket.on('viewer_count', (count) => {
-    document.getElementById('viewer-count').textContent = `👁 ${count} viewer${count !== 1 ? 's' : ''}`;
+    const label = count !== 1 ? t('chat.viewers') : t('chat.viewer');
+    document.getElementById('viewer-count').textContent = `👁 ${count} ${label}`;
   });
 
   socket.on('user_typing', ({ username }) => {
     const el = document.getElementById('typing-indicator');
-    el.textContent = `${username} is typing...`;
+    el.textContent = `${username} ${t('chat.isTyping')}`;
     clearTimeout(typingTimeout);
     typingTimeout = setTimeout(() => el.textContent = '', 2000);
   });
 
   socket.on('banned', ({ reason }) => {
-    appendSystemMsg(`You have been banned. ${reason ? 'Reason: ' + reason : ''}`);
+    appendSystemMsg(t('chat.bannedShort') + (reason ? ' ' + reason : ''));
     document.getElementById('chat-input-main').style.display = 'none';
     const prompt = document.getElementById('username-prompt');
-    prompt.innerHTML = `<p style="color:var(--red)">🚫 You have been banned from this chat.</p>`;
+    prompt.innerHTML = `<p style="color:var(--red)">🚫 ${t('chat.banned')}</p>`;
     prompt.style.display = 'flex';
   });
 
@@ -99,7 +100,7 @@ function connectSocket() {
 
   socket.on('user_banned', ({ username }) => {
     if (username === chatUsername) {
-      appendSystemMsg('🚫 You have been banned.');
+      appendSystemMsg(t('chat.bannedShort'));
       document.getElementById('chat-input-main').style.display = 'none';
     }
   });

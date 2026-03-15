@@ -4,11 +4,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LiveGame ⚽ - Watch Football Live Streams</title>
-  <meta name="description"
-    content="Watch live football matches with P2P streaming technology. Free, fast, high quality HD streams.">
-  <meta name="keywords"
-    content="football live stream, watch football, free football streams, P2P football, live game, soccer streams, live sports">
+  <title>Watch football live streams ⚽ - مشاهدة مباريات كرة القدم بث مباشر</title>
+
+<meta name="description" content="Watch football live streams free in HD quality with no buffering. Follow Premier League, Champions League, La Liga, Serie A and more matches live online. شاهد مباريات كرة القدم بث مباشر مجانا بجودة عالية بدون تقطيع.">
+
+<meta name="keywords" content="
+watch football live,
+live football streams,
+football live stream free,
+premier league live stream,
+champions league live,
+la liga live stream,
+koora live,
+بث مباشر مباريات اليوم,
+مشاهدة مباريات اليوم بث مباشر,
+كورة لايف,
+بث مباشر كرة القدم,
+الدوري الانجليزي مباشر,
+دوري ابطال اوروبا بث مباشر
+">
+
+<meta name="robots" content="index, follow">
+<meta name="language" content="English, Arabic">
+<meta name="revisit-after" content="1 days"> 
   <meta name="author" content="LiveGame">
 
   <!-- Open Graph / Facebook -->
@@ -43,16 +61,18 @@
       Live<span>Game</span>
     </a>
     <ul class="navbar-nav">
-      <li><a href="/" class="active" id="nav-home">🏠 Home</a></li>
-      <li><a href="/schedule.html" id="nav-schedule">📅 Schedule</a></li>
-      <li><a href="/admin.html" id="nav-admin">⚙️ Admin</a></li>
+      <li><a href="/" class="active" id="nav-home" data-i18n="nav.home">🏠 Home</a></li>
+      <li><a href="/schedule.html" id="nav-schedule" data-i18n="nav.schedule">📅 Schedule</a></li>
+      <li><a href="/admin.html" id="nav-admin" data-i18n="nav.admin">⚙️ Admin</a></li>
     </ul>
     <div class="navbar-right">
+      <button class="lang-toggle" id="lang-toggle" onclick="toggleLang()">عربي</button>
+      <button class="theme-toggle" id="theme-toggle" title="Toggle theme">🌙</button>
       <div class="live-indicator">
         <div class="live-dot"></div>
         <span id="live-count">0</span> LIVE
       </div>
-      <button id="pwa-install-btn" class="install-btn"><span class="install-icon">📲</span> Install App</button>
+      <button id="pwa-install-btn" class="install-btn"><span class="install-icon">📲</span> <span data-i18n="nav.installApp">Install App</span></button>
     </div>
   </nav>
 
@@ -61,31 +81,31 @@
     <section class="hero">
       <div class="container">
         <div class="hero-content">
-          <div class="hero-tag">
+          <div class="hero-tag" data-i18n="hero.tag">
             🌐 P2P Powered Streaming
           </div>
-          <h1 class="hero-title">
+          <h1 class="hero-title" data-i18n="hero.title">
             Watch Football<br><span class="highlight">Live & Free</span>
           </h1>
-          <p class="hero-subtitle">
+          <p class="hero-subtitle" data-i18n="hero.subtitle">
             HD quality streams powered by P2P technology. No buffering, no delays — pure football action.
           </p>
           <div class="hero-stats">
             <div class="stat-item">
               <div class="stat-value" id="stat-live">0</div>
-              <div class="stat-label">Live Now</div>
+              <div class="stat-label" data-i18n="hero.liveNow">Live Now</div>
             </div>
             <div class="stat-item">
               <div class="stat-value" id="stat-upcoming">0</div>
-              <div class="stat-label">Upcoming</div>
+              <div class="stat-label" data-i18n="hero.upcoming">Upcoming</div>
             </div>
             <div class="stat-item">
               <div class="stat-value">P2P</div>
-              <div class="stat-label">Technology</div>
+              <div class="stat-label" data-i18n="hero.technology">Technology</div>
             </div>
             <div class="stat-item">
               <div class="stat-value">HD</div>
-              <div class="stat-label">Quality</div>
+              <div class="stat-label" data-i18n="hero.quality">Quality</div>
             </div>
           </div>
         </div>
@@ -98,7 +118,7 @@
       <section class="section" id="live-matches-section">
         <div class="section-header">
           <h2 class="section-title">
-            <div class="dot red"></div> Live Now
+            <div class="dot red"></div> <span data-i18n="section.liveNow">Live Now</span>
           </h2>
         </div>
         <div id="live-grid" class="matches-grid">
@@ -107,7 +127,7 @@
         </div>
         <div id="live-empty" class="empty-state" style="display:none;">
           <div class="icon">📺</div>
-          <p>No live matches right now. Check the schedule for upcoming games!</p>
+          <p data-i18n="empty.noLive">No live matches right now. Check the schedule for upcoming games!</p>
         </div>
       </section>
 
@@ -115,12 +135,12 @@
       <section class="section">
         <div class="section-header">
           <h2 class="section-title">
-            <div class="dot"></div> Upcoming Matches
+            <div class="dot"></div> <span data-i18n="section.upcomingMatches">Upcoming Matches</span>
           </h2>
-          <a href="/schedule.html" class="view-all">View All →</a>
+          <a href="/schedule.html" class="view-all" data-i18n="section.viewAll">View All →</a>
         </div>
         <div class="filters" id="upcoming-filters">
-          <button class="filter-btn active" data-filter="all">All Leagues</button>
+          <button class="filter-btn active" data-filter="all" data-i18n="filter.allLeagues">All Leagues</button>
           <button class="filter-btn" data-filter="Premier League">Premier League</button>
           <button class="filter-btn" data-filter="La Liga">La Liga</button>
           <button class="filter-btn" data-filter="Champions League">Champions League</button>
@@ -134,7 +154,7 @@
         </div>
         <div id="upcoming-empty" class="empty-state" style="display:none;">
           <div class="icon">🗓️</div>
-          <p>No upcoming matches found.</p>
+          <p data-i18n="empty.noUpcoming">No upcoming matches found.</p>
         </div>
       </section>
 
@@ -142,7 +162,7 @@
       <section class="section">
         <div class="section-header">
           <h2 class="section-title">
-            <div class="dot" style="background:var(--text-muted)"></div> Recent Results
+            <div class="dot" style="background:var(--text-muted)"></div> <span data-i18n="section.recentResults">Recent Results</span>
           </h2>
         </div>
         <div id="finished-grid" class="matches-grid">
@@ -150,7 +170,7 @@
         </div>
         <div id="finished-empty" class="empty-state" style="display:none;">
           <div class="icon">📋</div>
-          <p>No recent results.</p>
+          <p data-i18n="empty.noResults">No recent results.</p>
         </div>
       </section>
 
@@ -163,11 +183,11 @@
       <div class="footer-inner">
         <div class="footer-brand">⚽ Live<span>Game</span></div>
         <ul class="footer-links">
-          <li><a href="/">Home</a></li>
-          <li><a href="/schedule.html">Schedule</a></li>
-          <li><a href="/admin.html">Admin</a></li>
+          <li><a href="/" data-i18n="footer.home">Home</a></li>
+          <li><a href="/schedule.html" data-i18n="footer.schedule">Schedule</a></li>
+          <li><a href="/admin.html" data-i18n="footer.admin">Admin</a></li>
         </ul>
-        <p class="footer-copy">© 2024 LiveGame. P2P Streaming Platform.</p>
+        <p class="footer-copy" data-i18n="footer.copy">© 2024 LiveGame. P2P Streaming Platform.</p>
       </div>
     </div>
   </footer>
@@ -175,6 +195,8 @@
   <!-- Toast Container -->
   <div class="toast-container" id="toast-container"></div>
 
+  <script src="/js/lang.js"></script>
+  <script src="/js/theme.js"></script>
   <script src="/js/home.js?v=3"></script>
   <script src="/js/pwa-register.js"></script>
 </body>

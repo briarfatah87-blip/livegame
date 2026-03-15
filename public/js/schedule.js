@@ -10,13 +10,14 @@ function formatDate(isoString) {
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
 
-  if (d.toDateString() === today.toDateString()) return 'Today';
-  if (d.toDateString() === tomorrow.toDateString()) return 'Tomorrow';
-  return d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
+  if (d.toDateString() === today.toDateString()) return t('schedule.today');
+  if (d.toDateString() === tomorrow.toDateString()) return t('schedule.tomorrow');
+  return d.toLocaleDateString(window.__lang === 'ar' ? 'ar' : [], { weekday: 'long', month: 'long', day: 'numeric' });
 }
 
 function formatTime(isoString) {
-  return new Date(isoString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const locale = window.__lang === 'ar' ? 'ar' : [];
+  return new Date(isoString).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
 }
 
 function teamLogoHtml(logo, name) {
