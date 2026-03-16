@@ -84,7 +84,7 @@ function renderScheduleItem(m) {
   const href = isUpcoming || isLive ? `/watch.html?id=${m.id}` : '#';
 
   const timeDisplay = isLive
-    ? `<div class="schedule-time live-time">🔴 LIVE${m.minute ? ` ${m.minute}'` : ''}</div>`
+    ? `<div class="schedule-time live-time"><span class="dot red" style="display:inline-block;width:8px;height:8px;margin-right:4px;"></span> LIVE${m.minute ? ` ${m.minute}'` : ''}</div>`
     : `<div class="schedule-time">${formatTime(m.start_time)}</div>`;
 
   const scorePart = (isLive || isFinished)
@@ -95,7 +95,7 @@ function renderScheduleItem(m) {
     ? `<div class="status-badge live schedule-badge"><div class="live-dot"></div>LIVE</div>`
     : isFinished
     ? `<div class="status-badge finished schedule-badge">FT</div>`
-    : `<div class="status-badge upcoming schedule-badge">⏰</div>`;
+    : `<div class="status-badge upcoming schedule-badge"><svg viewBox="0 0 24 24" class="icon icon-sm"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>`;
 
   return `
     <a href="${href}" class="schedule-item ${isLive ? 'live-item' : ''}">
@@ -110,7 +110,7 @@ function renderScheduleItem(m) {
           ${teamLogoHtml(m.team_away_logo, m.team_away)}
           <span class="schedule-team-name">${m.team_away}</span>
         </div>
-        <div class="schedule-competition">⚽ ${m.competition}</div>
+        <div class="schedule-competition"><svg viewBox="0 0 24 24" class="icon icon-sm" style="margin-right:4px;"><circle cx="12" cy="12" r="10"></circle><path d="m12 12-3.5 1.5L7 10l3-2.5L13.5 9l-1.5 3z"></path><path d="M12 2v5.5"></path><path d="M12 22v-5.5"></path><path d="M22 12h-5.5"></path><path d="M2 12h5.5"></path><path d="m7 10-3-1.5"></path><path d="m17 10 3-1.5"></path><path d="m7 14-3 1.5"></path><path d="m17 14 3-1.5"></path></svg> ${m.competition}</div>
       </div>
       ${scorePart}
       ${badge}

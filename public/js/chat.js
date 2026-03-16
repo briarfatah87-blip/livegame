@@ -71,7 +71,7 @@ function connectSocket() {
 
   socket.on('viewer_count', (count) => {
     const label = count !== 1 ? t('chat.viewers') : t('chat.viewer');
-    document.getElementById('viewer-count').textContent = `👁 ${count} ${label}`;
+    document.getElementById('viewer-count').innerHTML = `<svg viewBox="0 0 24 24" class="icon icon-sm" style="margin-right:6px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg> ${count} ${label}`;
   });
 
   socket.on('user_typing', ({ username }) => {
@@ -85,7 +85,7 @@ function connectSocket() {
     appendSystemMsg(t('chat.bannedShort') + (reason ? ' ' + reason : ''));
     document.getElementById('chat-input-main').style.display = 'none';
     const prompt = document.getElementById('username-prompt');
-    prompt.innerHTML = `<p style="color:var(--red)">🚫 ${t('chat.banned')}</p>`;
+    prompt.innerHTML = `<div style="text-align:center;"><svg viewBox="0 0 24 24" class="icon icon-lg" style="stroke:var(--red);margin-bottom:12px;"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg><p style="color:var(--red);font-weight:600;">${t('chat.banned')}</p></div>`;
     prompt.style.display = 'flex';
   });
 

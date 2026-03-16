@@ -7,14 +7,16 @@
     
     function updateIcon(theme) {
       btns.forEach(btn => {
-        // If it's a button with just text/emoji
-        if (btn.tagName === 'BUTTON' && !btn.querySelector('.nav-icon')) {
-            btn.textContent = theme === 'dark' ? '🌙' : '☀️';
-        } 
-        // If it's the bottom nav item with separate icon span
-        const iconSpan = btn.querySelector('.nav-icon');
-        if (iconSpan) {
-            iconSpan.textContent = theme === 'dark' ? '🌙' : '☀️';
+        const moon = btn.querySelector('.icon-moon');
+        const sun = btn.querySelector('.icon-sun');
+        if (moon && sun) {
+          if (theme === 'dark') {
+            moon.classList.remove('hidden');
+            sun.classList.add('hidden');
+          } else {
+            moon.classList.add('hidden');
+            sun.classList.remove('hidden');
+          }
         }
       });
     }

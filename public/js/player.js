@@ -30,7 +30,7 @@ async function loadMatch() {
 function applyMatchInfo(m) {
   console.log('[SEO] Applying match info:', m);
   // SEO & Title
-  const defaultTitle = `${m.team_home} vs ${m.team_away} - LiveGame ⚽`;
+  const defaultTitle = `${m.team_home} vs ${m.team_away} - LiveGame`;
   const seoDesc = m.seo_description || `Watch live ${m.team_home} vs ${m.team_away} stream with P2P technology and real-time live chat.`;
   
   document.title = m.seo_description || defaultTitle;
@@ -43,7 +43,7 @@ function applyMatchInfo(m) {
   updateMeta('twitter:description', seoDesc);
 
   // Competition
-  document.getElementById('match-competition').textContent = `⚽ ${m.competition}`;
+  document.getElementById('match-competition').innerHTML = `<svg viewBox="0 0 24 24" class="icon icon-sm" style="margin-right:8px;"><circle cx="12" cy="12" r="10"></circle><path d="m12 12-3.5 1.5L7 10l3-2.5L13.5 9l-1.5 3z"></path><path d="M12 2v5.5"></path><path d="M12 22v-5.5"></path><path d="M22 12h-5.5"></path><path d="M2 12h5.5"></path><path d="m7 10-3-1.5"></path><path d="m17 10 3-1.5"></path><path d="m7 14-3 1.5"></path><path d="m17 14 3-1.5"></path></svg> ${m.competition}`;
 
   // Status badge
   if (m.status === 'live') {
@@ -118,7 +118,7 @@ function showOverlay(text, isError = false) {
   const overlay = document.getElementById('player-overlay');
   overlay.classList.remove('hidden');
   if (isError) {
-    document.getElementById('overlay-text').innerHTML = `<div class="player-error-msg">❌ ${text}</div>`;
+    document.getElementById('overlay-text').innerHTML = `<div class="player-error-msg"><svg viewBox="0 0 24 24" class="icon icon-lg" style="stroke:var(--red);margin-bottom:12px;display:block;"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> ${text}</div>`;
   } else {
     document.getElementById('overlay-text').innerHTML = `<div class="player-loading-text">${text}</div>`;
   }

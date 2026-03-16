@@ -3,15 +3,15 @@
   const translations = {
     en: {
       // Navbar
-      "nav.home": "🏠 Home",
-      "nav.schedule": "📅 Schedule",
-      "nav.admin": "⚙️ Admin",
+      "nav.home": "Home",
+      "nav.schedule": "Schedule",
+      "nav.admin": "Admin",
       "nav.installApp": "Install App",
       "nav.theme": "Theme",
       "nav.language": "Language",
 
       // Hero
-      "hero.tag": "🌐 P2P Powered Streaming",
+      "hero.tag": "P2P Powered Streaming",
       "hero.title": 'Watch Football<br><span class="highlight">Live & Free</span>',
       "hero.subtitle": "HD quality streams powered by P2P technology. No buffering, no delays — pure football action.",
       "hero.liveNow": "Live Now",
@@ -28,7 +28,7 @@
       // Filters
       "filter.allLeagues": "All Leagues",
       "filter.all": "All",
-      "filter.live": "🔴 Live",
+      "filter.live": "Live",
       "filter.upcoming": "Upcoming",
       "filter.finished": "Finished",
 
@@ -46,13 +46,13 @@
 
       // Watch page
       "watch.back": "← Back",
-      "watch.football": "⚽ Football",
-      "watch.share": "🔗 Share",
+      "watch.football": "Football",
+      "watch.share": "Share",
       "watch.peers": "Peers",
       "watch.p2pDownload": "P2P Download",
       "watch.p2pUpload": "P2P Upload",
       "watch.cdnSaved": "CDN Saved",
-      "watch.p2pActive": "🔗 P2P Active",
+      "watch.p2pActive": "P2P Active",
       "watch.home": "Home",
       "watch.away": "Away",
       "watch.fullTime": "Full Time",
@@ -61,12 +61,12 @@
       "watch.networkError": "Network error — retrying...",
       "watch.streamError": "Stream error. Please try refreshing.",
       "watch.browserNoHls": "Your browser does not support HLS streaming.",
-      "watch.initP2P": "⚙️ Initializing P2P engine...",
+      "watch.initP2P": "Initializing P2P engine...",
       "watch.matchStarting": "Match is starting! Connecting to stream...",
       "watch.linkCopied": "Link copied!",
 
       // Chat
-      "chat.title": "💬 Live Chat",
+      "chat.title": "Live Chat",
       "chat.viewers": "viewers",
       "chat.viewer": "viewer",
       "chat.enterName": "Enter your name to join the chat",
@@ -74,7 +74,7 @@
       "chat.saySomething": "Say something...",
       "chat.isTyping": "is typing...",
       "chat.banned": "You have been banned from this chat.",
-      "chat.bannedShort": "🚫 You have been banned.",
+      "chat.bannedShort": "You have been banned.",
 
       // Countdown
       "countdown.days": "Days",
@@ -84,9 +84,9 @@
       "countdown.matchIn": "Match in",
 
       // Schedule page
-      "schedule.title": "📅 Match Schedule",
+      "schedule.title": "Match Schedule",
       "schedule.subtitle": "All matches — live, upcoming, and recent results",
-      "schedule.search": "🔍 Search teams or competitions...",
+      "schedule.search": "Search teams or competitions...",
       "schedule.today": "Today",
       "schedule.tomorrow": "Tomorrow",
 
@@ -94,16 +94,16 @@
       "admin.title": "Admin Panel",
       "admin.subtitle": "Enter your admin password to continue",
       "admin.password": "Admin password...",
-      "admin.login": "🔓 Login",
+      "admin.login": "Login",
       "admin.wrongPassword": "Wrong password. Try again.",
       "admin.management": "Management",
-      "admin.matches": "📋 Matches",
-      "admin.addMatch": "➕ Add Match",
-      "admin.bannedUsers": "🚫 Banned Users",
+      "admin.matches": "Matches",
+      "admin.addMatch": "Add Match",
+      "admin.bannedUsers": "Banned Users",
       "admin.account": "Account",
-      "admin.logout": "🚪 Logout",
-      "admin.allMatches": "📋 All Matches",
-      "admin.addNewMatch": "➕ Add New Match",
+      "admin.logout": "Logout",
+      "admin.allMatches": "All Matches",
+      "admin.addNewMatch": "Add New Match",
       "admin.matchTitle": "Match Title *",
       "admin.homeTeam": "Home Team *",
       "admin.homeTeamLogo": "Home Team Logo URL",
@@ -118,12 +118,12 @@
       "admin.minute": "Minute (if live)",
       "admin.streamUrl": "Stream URL (HLS .m3u8)",
       "admin.seoDesc": "SEO Description (Title & Meta)",
-      "admin.saveMatch": "✅ Save Match",
+      "admin.saveMatch": "Save Match",
       "admin.cancel": "Cancel",
       "admin.banUser": "Ban a User",
       "admin.usernameBan": "Username to ban...",
       "admin.reasonBan": "Reason (optional)...",
-      "admin.ban": "🚫 Ban",
+      "admin.ban": "Ban",
       "admin.loading": "Loading...",
       "admin.teams": "Teams",
       "admin.score": "Score",
@@ -135,9 +135,9 @@
       "admin.action": "Action",
 
       // Match cards (dynamic)
-      "card.watchLive": "▶ Watch Live",
-      "card.finished": "✅ Finished",
-      "card.upcoming": "⏰ Upcoming",
+      "card.watchLive": "Watch Live",
+      "card.finished": "Finished",
+      "card.upcoming": "Upcoming",
 
       // Status
       "status.upcoming": "Upcoming",
@@ -145,10 +145,10 @@
       "status.finished": "Finished",
 
       // Dynamic admin strings
-      "admin.addNewMatchTitle": "➕ Add New Match",
-      "admin.editMatchTitle": "✏️ Edit Match",
-      "admin.saveMatchBtn": "✅ Save Match",
-      "admin.updateMatchBtn": "✅ Update Match",
+      "admin.addNewMatchTitle": "Add New Match",
+      "admin.editMatchTitle": "Edit Match",
+      "admin.saveMatchBtn": "Save Match",
+      "admin.updateMatchBtn": "Update Match",
       "admin.saving": "Saving...",
       "admin.noMatches": "No matches yet. Add one!",
       "admin.errorLoadingMatches": "Error loading matches.",
@@ -168,7 +168,7 @@
       "admin.errorUnbanning": "Error unbanning",
       "admin.noBans": "No banned users.",
       "admin.errorLoadingBans": "Error loading bans.",
-      "admin.unban": "✅ Unban",
+      "admin.unban": "Unban",
 
       // Remaining player/home strings
       "player.errorLoadingMatch": "Error loading match info",
@@ -178,15 +178,15 @@
 
     ar: {
       // Navbar
-      "nav.home": "🏠 الرئيسية",
-      "nav.schedule": "📅 الجدول",
-      "nav.admin": "⚙️ الإدارة",
+      "nav.home": "الرئيسية",
+      "nav.schedule": "الجدول",
+      "nav.admin": "الإدارة",
       "nav.installApp": "تثبيت التطبيق",
       "nav.theme": "المظهر",
       "nav.language": "اللغة",
 
       // Hero
-      "hero.tag": "🌐 بث مدعوم بتقنية P2P",
+      "hero.tag": "بث مدعوم بتقنية P2P",
       "hero.title": 'شاهد كرة القدم<br><span class="highlight">مباشر ومجاني</span>',
       "hero.subtitle": "بث عالي الجودة بتقنية P2P. بدون تقطيع، بدون تأخير — كرة قدم حقيقية.",
       "hero.liveNow": "مباشر الآن",
@@ -203,7 +203,7 @@
       // Filters
       "filter.allLeagues": "كل الدوريات",
       "filter.all": "الكل",
-      "filter.live": "🔴 مباشر",
+      "filter.live": "مباشر",
       "filter.upcoming": "القادمة",
       "filter.finished": "انتهت",
 
@@ -221,13 +221,13 @@
 
       // Watch page
       "watch.back": "← رجوع",
-      "watch.football": "⚽ كرة القدم",
-      "watch.share": "🔗 مشاركة",
+      "watch.football": "كرة القدم",
+      "watch.share": "مشاركة",
       "watch.peers": "الأقران",
       "watch.p2pDownload": "تحميل P2P",
       "watch.p2pUpload": "رفع P2P",
       "watch.cdnSaved": "توفير CDN",
-      "watch.p2pActive": "🔗 P2P نشط",
+      "watch.p2pActive": "P2P نشط",
       "watch.home": "المضيف",
       "watch.away": "الضيف",
       "watch.fullTime": "نهاية المباراة",
@@ -236,12 +236,12 @@
       "watch.networkError": "خطأ في الشبكة — جاري إعادة المحاولة...",
       "watch.streamError": "خطأ في البث. يرجى تحديث الصفحة.",
       "watch.browserNoHls": "متصفحك لا يدعم بث HLS.",
-      "watch.initP2P": "⚙️ جاري تهيئة محرك P2P...",
+      "watch.initP2P": "جاری تهيئة محرك P2P...",
       "watch.matchStarting": "المباراة تبدأ! جاري الاتصال بالبث...",
       "watch.linkCopied": "تم نسخ الرابط!",
 
       // Chat
-      "chat.title": "💬 الدردشة المباشرة",
+      "chat.title": "الدردشة المباشرة",
       "chat.viewers": "مشاهد",
       "chat.viewer": "مشاهد",
       "chat.enterName": "أدخل اسمك للانضمام إلى الدردشة",
@@ -249,7 +249,7 @@
       "chat.saySomething": "قل شيئاً...",
       "chat.isTyping": "يكتب...",
       "chat.banned": "تم حظرك من هذه الدردشة.",
-      "chat.bannedShort": "🚫 تم حظرك.",
+      "chat.bannedShort": "تم حظرك.",
 
       // Countdown
       "countdown.days": "أيام",
@@ -259,9 +259,9 @@
       "countdown.matchIn": "مباراة في",
 
       // Schedule page
-      "schedule.title": "📅 جدول المباريات",
+      "schedule.title": "جدول المباريات",
       "schedule.subtitle": "جميع المباريات — مباشرة، قادمة، ونتائج حديثة",
-      "schedule.search": "🔍 ابحث عن فرق أو مسابقات...",
+      "schedule.search": "ابحث عن فرق أو مسابقات...",
       "schedule.today": "اليوم",
       "schedule.tomorrow": "غداً",
 
@@ -269,16 +269,16 @@
       "admin.title": "لوحة الإدارة",
       "admin.subtitle": "أدخل كلمة مرور المسؤول للمتابعة",
       "admin.password": "كلمة مرور المسؤول...",
-      "admin.login": "🔓 تسجيل الدخول",
+      "admin.login": "تسجيل الدخول",
       "admin.wrongPassword": "كلمة المرور خاطئة. حاول مرة أخرى.",
       "admin.management": "الإدارة",
-      "admin.matches": "📋 المباريات",
-      "admin.addMatch": "➕ إضافة مباراة",
-      "admin.bannedUsers": "🚫 المستخدمون المحظورون",
+      "admin.matches": "المباريات",
+      "admin.addMatch": "إضافة مباراة",
+      "admin.bannedUsers": "المستخدمون المحظورون",
       "admin.account": "الحساب",
-      "admin.logout": "🚪 تسجيل الخروج",
-      "admin.allMatches": "📋 كل المباريات",
-      "admin.addNewMatch": "➕ إضافة مباراة جديدة",
+      "admin.logout": "تسجيل الخروج",
+      "admin.allMatches": "كل المباريات",
+      "admin.addNewMatch": "إضافة مباراة جديدة",
       "admin.matchTitle": "عنوان المباراة *",
       "admin.homeTeam": "الفريق المضيف *",
       "admin.homeTeamLogo": "رابط شعار الفريق المضيف",
@@ -293,12 +293,12 @@
       "admin.minute": "الدقيقة (إذا مباشر)",
       "admin.streamUrl": "رابط البث (HLS .m3u8)",
       "admin.seoDesc": "وصف محركات البحث (العنوان والوصف)",
-      "admin.saveMatch": "✅ حفظ المباراة",
+      "admin.saveMatch": "حفظ المباراة",
       "admin.cancel": "إلغاء",
       "admin.banUser": "حظر مستخدم",
       "admin.usernameBan": "اسم المستخدم للحظر...",
       "admin.reasonBan": "السبب (اختياري)...",
-      "admin.ban": "🚫 حظر",
+      "admin.ban": "حظر",
       "admin.loading": "جاري التحميل...",
       "admin.teams": "الفرق",
       "admin.score": "النتيجة",
@@ -310,9 +310,9 @@
       "admin.action": "إجراء",
 
       // Match cards (dynamic)
-      "card.watchLive": "▶ شاهد مباشر",
-      "card.finished": "✅ انتهت",
-      "card.upcoming": "⏰ قادمة",
+      "card.watchLive": "شاهد مباشر",
+      "card.finished": "انتهت",
+      "card.upcoming": "قادمة",
 
       // Status
       "status.upcoming": "قادمة",
@@ -320,10 +320,10 @@
       "status.finished": "انتهت",
 
       // Dynamic admin strings
-      "admin.addNewMatchTitle": "➕ إضافة مباراة جديدة",
-      "admin.editMatchTitle": "✏️ تعديل المباراة",
-      "admin.saveMatchBtn": "✅ حفظ المباراة",
-      "admin.updateMatchBtn": "✅ تحديث المباراة",
+      "admin.addNewMatchTitle": "إضافة مباراة جديدة",
+      "admin.editMatchTitle": "تعديل المباراة",
+      "admin.saveMatchBtn": "حفظ المباراة",
+      "admin.updateMatchBtn": "تحديث المباراة",
       "admin.saving": "جاري الحفظ...",
       "admin.noMatches": "لا توجد مباريات بعد. أضف واحدة!",
       "admin.errorLoadingMatches": "خطأ في تحميل المباريات.",
@@ -343,7 +343,7 @@
       "admin.errorUnbanning": "خطأ في رفع الحظر",
       "admin.noBans": "لا يوجد مستخدمون محظورون.",
       "admin.errorLoadingBans": "خطأ في تحميل قائمة المحظورين.",
-      "admin.unban": "✅ رفع الحظر",
+      "admin.unban": "رفع الحظر",
 
       // Remaining player/home strings
       "player.errorLoadingMatch": "خطأ في تحميل معلومات المباراة",

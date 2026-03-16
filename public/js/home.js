@@ -10,8 +10,8 @@ const EMOJIS_BY_COMPETITION = {
   'Ligue 1': '🇫🇷',
 };
 
-function getCompetitionEmoji(competition) {
-  return EMOJIS_BY_COMPETITION[competition] || '⚽';
+function getCompetitionIcon(competition) {
+  return `<svg viewBox="0 0 24 24" class="icon icon-sm" style="margin-right:6px;"><circle cx="12" cy="12" r="10"></circle><path d="m12 12-3.5 1.5L7 10l3-2.5L13.5 9l-1.5 3z"></path><path d="M12 2v5.5"></path><path d="M12 22v-5.5"></path><path d="M22 12h-5.5"></path><path d="M2 12h5.5"></path><path d="m7 10-3-1.5"></path><path d="m17 10 3-1.5"></path><path d="m7 14-3 1.5"></path><path d="m17 14 3-1.5"></path></svg>`;
 }
 
 function formatTime(isoString, forCard = true) {
@@ -41,7 +41,7 @@ function renderMatchCard(match) {
     ? `<div class="status-badge live"><div class="live-dot"></div>LIVE ${match.minute ? `${match.minute}'` : ''}</div>`
     : isFinished
     ? `<div class="status-badge finished">FT</div>`
-    : `<div class="status-badge upcoming">🗓 ${formatTime(match.start_time)}</div>`;
+    : `<div class="status-badge upcoming"><svg viewBox="0 0 24 24" class="icon icon-sm" style="margin-right:4px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> ${formatTime(match.start_time)}</div>`;
 
   const scoreOrTime = isLive || isFinished
     ? `<div class="score">
@@ -60,7 +60,7 @@ function renderMatchCard(match) {
   return `
     <a href="${href}" class="match-card ${match.status}">
       <div class="card-header">
-        <div class="competition-badge">${competitionEmoji} ${match.competition}</div>
+        <div class="competition-badge">${getCompetitionIcon(match.competition)} ${match.competition}</div>
         ${statusBadge}
       </div>
       <div class="teams-row">
@@ -78,7 +78,7 @@ function renderMatchCard(match) {
         </div>
       </div>
       <div class="card-footer">
-        <div class="stadium-info">${match.stadium ? `📍 ${match.stadium}` : ''}</div>
+        <div class="stadium-info">${match.stadium ? `<svg viewBox="0 0 24 24" class="icon icon-sm" style="margin-right:4px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ${match.stadium}` : ''}</div>
         ${watchBtn}
       </div>
     </a>

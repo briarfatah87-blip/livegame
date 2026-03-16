@@ -4,11 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel - LiveGame ⚽</title>
+  <title>Admin Panel - LiveGame</title>
   <meta name="description" content="Admin panel for managing LiveGame matches and users.">
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300e676' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'></circle><path d='m12 12-3.5 1.5L7 10l3-2.5L13.5 9l-1.5 3z'></path><path d='M12 2v5.5'></path><path d='M12 22v-5.5'></path><path d='M22 12h-5.5'></path><path d='M2 12h5.5'></path><path d='m7 10-3-1.5'></path><path d='m17 10 3-1.5'></path><path d='m7 14-3 1.5'></path><path d='m17 14 3-1.5'></path></svg>">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#0a0e17">
@@ -378,14 +378,17 @@
       Live<span>Game</span>
     </a>
     <ul class="navbar-nav">
-      <li><a href="/" data-i18n="nav.home">🏠 Home</a></li>
-      <li><a href="/schedule.html" data-i18n="nav.schedule">📅 Schedule</a></li>
-      <li><a href="/admin.html" class="active" data-i18n="nav.admin">⚙️ Admin</a></li>
+      <li><a href="/" data-i18n="nav.home"><svg viewBox="0 0 24 24" class="icon"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> Home</a></li>
+      <li><a href="/schedule.html" data-i18n="nav.schedule"><svg viewBox="0 0 24 24" class="icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> Schedule</a></li>
+      <li><a href="/admin.html" class="active" data-i18n="nav.admin"><svg viewBox="0 0 24 24" class="icon"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> Admin</a></li>
     </ul>
     <div class="navbar-right">
       <button class="lang-toggle" id="lang-toggle" onclick="toggleLang()">عربي</button>
-      <button class="theme-toggle" id="theme-toggle" title="Toggle theme">🌙</button>
-      <button id="pwa-install-btn" class="install-btn"><span class="install-icon">📲</span> <span data-i18n="nav.installApp">Install App</span></button>
+      <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+        <svg viewBox="0 0 24 24" class="icon icon-moon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg viewBox="0 0 24 24" class="icon icon-sun hidden"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+      </button>
+      <button id="pwa-install-btn" class="install-btn"><span class="install-icon"><svg viewBox="0 0 24 24" class="icon" style="stroke:currentColor;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg></span> <span data-i18n="nav.installApp">Install App</span></button>
     </div>
   </nav>
 
@@ -394,7 +397,7 @@
     <!-- Login Screen -->
     <div class="admin-login" id="login-screen">
       <div class="login-card">
-        <div class="login-icon">🔐</div>
+        <div class="login-icon"><svg viewBox="0 0 24 24" class="icon icon-lg" style="width:48px;height:48px;stroke:var(--accent);"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
         <div class="login-title" data-i18n="admin.title">Admin Panel</div>
         <div class="login-subtitle" data-i18n="admin.subtitle">Enter your admin password to continue</div>
         <div class="form-group">
@@ -402,7 +405,7 @@
             autocomplete="current-password">
         </div>
         <div style="margin-top:16px;">
-          <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="login()" data-i18n="admin.login">🔓 Login</button>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="login()" data-i18n="admin.login"><svg viewBox="0 0 24 24" class="icon" style="stroke:var(--bg-primary);"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg> Login</button>
         </div>
         <p id="login-error" style="color:var(--red);font-size:13px;margin-top:12px;display:none;" data-i18n="admin.wrongPassword">Wrong password. Try
           again.</p>
@@ -417,13 +420,13 @@
         <aside class="admin-sidebar">
           <div class="admin-sidebar-title" data-i18n="admin.management">Management</div>
           <ul class="admin-nav">
-            <li><button class="active" onclick="showPanel('matches')" id="nav-matches" data-i18n="admin.matches">📋 Matches</button></li>
-            <li><button onclick="showPanel('add-match')" id="nav-add-match" data-i18n="admin.addMatch">➕ Add Match</button></li>
-            <li><button onclick="showPanel('bans')" id="nav-bans" data-i18n="admin.bannedUsers">🚫 Banned Users</button></li>
+            <li><button class="active" onclick="showPanel('matches')" id="nav-matches" data-i18n="admin.matches"><svg viewBox="0 0 24 24" class="icon"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg> Matches</button></li>
+            <li><button onclick="showPanel('add-match')" id="nav-add-match" data-i18n="admin.addMatch"><svg viewBox="0 0 24 24" class="icon"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Add Match</button></li>
+            <li><button onclick="showPanel('bans')" id="nav-bans" data-i18n="admin.bannedUsers"><svg viewBox="0 0 24 24" class="icon"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg> Banned Users</button></li>
           </ul>
           <div class="admin-sidebar-title" style="margin-top:24px;" data-i18n="admin.account">Account</div>
           <ul class="admin-nav">
-            <li><button onclick="logout()" data-i18n="admin.logout">🚪 Logout</button></li>
+            <li><button onclick="logout()" data-i18n="admin.logout"><svg viewBox="0 0 24 24" class="icon"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Logout</button></li>
           </ul>
         </aside>
 
@@ -432,9 +435,9 @@
 
           <!-- Matches Panel -->
           <div class="admin-panel active" id="panel-matches">
-            <div class="admin-panel-title" data-i18n="admin.allMatches">📋 All Matches</div>
+            <div class="admin-panel-title" data-i18n="admin.allMatches"><svg viewBox="0 0 24 24" class="icon icon-lg"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg> All Matches</div>
             <div style="margin-bottom:16px;">
-              <button class="btn btn-primary" onclick="showPanel('add-match')" data-i18n="admin.addNewMatch">➕ Add New Match</button>
+              <button class="btn btn-primary" onclick="showPanel('add-match')" data-i18n="admin.addNewMatch"><svg viewBox="0 0 24 24" class="icon" style="stroke:var(--bg-primary);"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Add New Match</button>
             </div>
             <div
               style="overflow-x:auto; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md);">
@@ -461,7 +464,7 @@
 
           <!-- Add Match Panel -->
           <div class="admin-panel" id="panel-add-match">
-            <div class="admin-panel-title" id="match-form-title" data-i18n="admin.addNewMatch">➕ Add New Match</div>
+            <div class="admin-panel-title" id="match-form-title" data-i18n="admin.addNewMatch"><svg viewBox="0 0 24 24" class="icon icon-lg"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Add New Match</div>
             <input type="hidden" id="edit-match-id">
             <div
               style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;">
@@ -530,7 +533,7 @@
                 </div>
               </div>
               <div class="form-actions" style="margin-top:24px;">
-                <button class="btn btn-primary" id="submit-match-btn" onclick="submitMatch()" data-i18n="admin.saveMatch">✅ Save Match</button>
+                <button class="btn btn-primary" id="submit-match-btn" onclick="submitMatch()" data-i18n="admin.saveMatch"><svg viewBox="0 0 24 24" class="icon" style="stroke:var(--bg-primary);"><polyline points="20 6 9 17 4 12"></polyline></svg> Save Match</button>
                 <button class="btn btn-ghost" onclick="showPanel('matches')" data-i18n="admin.cancel">Cancel</button>
               </div>
             </div>
@@ -538,7 +541,7 @@
 
           <!-- Bans Panel -->
           <div class="admin-panel" id="panel-bans">
-            <div class="admin-panel-title" data-i18n="admin.bannedUsers">🚫 Banned Users</div>
+            <div class="admin-panel-title" data-i18n="admin.bannedUsers"><svg viewBox="0 0 24 24" class="icon icon-lg"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg> Banned Users</div>
             <div
               style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:24px;">
               <div style="font-size:15px;font-weight:600;margin-bottom:16px;" data-i18n="admin.banUser">Ban a User</div>
@@ -547,7 +550,7 @@
                   style="flex:1;min-width:180px;">
                 <input type="text" class="form-input" id="ban-reason" data-i18n="admin.reasonBan" data-i18n-attr="placeholder" placeholder="Reason (optional)..."
                   style="flex:1;min-width:180px;">
-                <button class="btn btn-danger" onclick="banUser()" data-i18n="admin.ban">🚫 Ban</button>
+                <button class="btn btn-danger" onclick="banUser()" data-i18n="admin.ban"><svg viewBox="0 0 24 24" class="icon" style="stroke:white;"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg> Ban</button>
               </div>
             </div>
             <div
@@ -579,19 +582,19 @@
   <!-- Bottom Nav (Mobile) -->
   <nav class="bottom-nav">
     <a href="/" class="nav-item" id="nav-home-mobile">
-      <span class="nav-icon">🏠</span>
+      <span class="nav-icon"><svg viewBox="0 0 24 24" class="icon"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></span>
       <span class="nav-label" data-i18n="nav.home">Home</span>
     </a>
     <a href="/schedule.html" class="nav-item" id="nav-schedule-mobile">
-      <span class="nav-icon">📅</span>
+      <span class="nav-icon"><svg viewBox="0 0 24 24" class="icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></span>
       <span class="nav-label" data-i18n="nav.schedule">Schedule</span>
     </a>
     <button class="nav-item" onclick="toggleLang()">
-      <span class="nav-icon">🌐</span>
+      <span class="nav-icon"><svg viewBox="0 0 24 24" class="icon"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg></span>
       <span class="nav-label" data-i18n="nav.language">Language</span>
     </button>
     <button class="nav-item theme-toggle">
-      <span class="nav-icon">🌙</span>
+      <span class="nav-icon"><svg viewBox="0 0 24 24" class="icon icon-moon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg><svg viewBox="0 0 24 24" class="icon icon-sun hidden"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg></span>
       <span class="nav-label" data-i18n="nav.theme">Theme</span>
     </button>
   </nav>
