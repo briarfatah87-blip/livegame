@@ -752,7 +752,7 @@ input, textarea { font-family: var(--font); }
 }
 
 /* Hide Install Button if already installed/standalone */
-@media (display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui) {
+@media (display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui), (display-mode: picture-in-picture) {
   .install-btn { display: none !important; }
 }
 

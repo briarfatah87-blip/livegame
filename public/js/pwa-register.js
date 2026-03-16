@@ -21,10 +21,23 @@ if ('serviceWorker' in navigator) {
 let deferredPrompt;
 const installBtn = document.getElementById('pwa-install-btn');
 
-// Only show the button if NOT in standalone mode
-const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
-if (installBtn && !isStandalone) {
-  installBtn.style.display = 'flex';
+// Enhanced standalone mode detection
+const isPwaParam = window.location.search.includes('source=pwa');
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                   window.matchMedia('(display-mode: fullscreen)').matches ||
+                   window.matchMedia('(display-mode: minimal-ui)').matches ||
+                   navigator.standalone || 
+                   isPwaParam;
+
+console.log('[PWA] Standalone Mode:', isStandalone);
+
+if (installBtn) {
+  if (isStandalone) {
+    installBtn.style.display = 'none';
+  } else {
+    // Show only if not standalone
+    installBtn.style.display = 'flex';
+  }
 }
 
 window.addEventListener('beforeinstallprompt', (e) => {

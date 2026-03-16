@@ -3,7 +3,7 @@
   "short_name": "LiveGame",
   "description": "Watch live football matches with P2P streaming technology.",
   "id": "/",
-  "start_url": "/",
+  "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
   "background_color": "#0a0e17",
