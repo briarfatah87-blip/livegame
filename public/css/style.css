@@ -781,6 +781,8 @@ input, textarea { font-family: var(--font); }
   animation: icon-float 3s ease-in-out infinite;
 }
 
+.hidden { display: none !important; }
+
 /* Specific Logo adjustments */
 .logo-icon svg {
   width: 32px;
