@@ -48,7 +48,6 @@ function applyMatchInfo(m) {
   // Status badge
   if (m.status === 'live') {
     document.getElementById('status-badge').style.display = 'flex';
-    document.getElementById('watch-live-badge').style.display = 'flex';
   }
 
   // Score

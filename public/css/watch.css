@@ -29,8 +29,22 @@
 .match-meta {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
+}
+
+.back-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  transition: color var(--transition);
+}
+
+.back-link:hover {
+  color: var(--text-primary);
 }
 
 .match-competition {
@@ -591,7 +605,7 @@
     height: 600px;
     border-left: none;
     border-top: 1px solid var(--border);
-    padding-bottom: 80px; /* Extra space for mobile bottom nav */
+    padding-bottom: 110px; /* Extra space for mobile bottom nav + safe areas */
   }
 }
 
@@ -614,7 +628,29 @@
   .big-score {
     font-size: 32px;
     gap: 10px;
-    min-width: 80px;
+    min-width: 70px;
+  }
+
+  .match-meta {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 400px) {
+  .score-card-teams {
+    gap: 4px;
+  }
+  .score-card-name {
+    font-size: 11px;
+    max-width: 80px;
+  }
+  .big-score {
+    font-size: 26px;
+    gap: 6px;
+    min-width: 60px;
+  }
+  .big-score-sep {
+    font-size: 18px;
   }
 }
 

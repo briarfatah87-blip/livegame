@@ -756,6 +756,13 @@ input, textarea { font-family: var(--font); }
   .install-btn { display: none !important; }
 }
 
+/* Fix mobile branding squish */
+@media (max-width: 480px) {
+  .navbar-right .install-btn { display: none !important; }
+  .navbar-brand { font-size: 16px; gap: 6px; }
+  .navbar { padding: 0 12px; }
+}
+
 /* SVG Icons System */
 .icon {
   width: 1.25em;
