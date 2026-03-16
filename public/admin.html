@@ -353,7 +353,16 @@
 
   <nav class="navbar">
     <a href="/" class="navbar-brand">
-      <div class="logo-icon">⚽</div>
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="m12 12-3.5 1.5L7 10l3-2.5L13.5 9l-1.5 3z"></path>
+          <path d="M12 2v5.5"></path><path d="M12 22v-5.5"></path>
+          <path d="M22 12h-5.5"></path><path d="M2 12h5.5"></path>
+          <path d="m7 10-3-1.5"></path><path d="m17 10 3-1.5"></path>
+          <path d="m7 14-3 1.5"></path><path d="m17 14 3-1.5"></path>
+        </svg>
+      </div>
       Live<span>Game</span>
     </a>
     <ul class="navbar-nav">
@@ -554,6 +563,26 @@
     </div>
 
   </div>
+
+  <!-- Bottom Nav (Mobile) -->
+  <nav class="bottom-nav">
+    <a href="/" class="nav-item" id="nav-home-mobile">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label" data-i18n="nav.home">Home</span>
+    </a>
+    <a href="/schedule.html" class="nav-item" id="nav-schedule-mobile">
+      <span class="nav-icon">📅</span>
+      <span class="nav-label" data-i18n="nav.schedule">Schedule</span>
+    </a>
+    <button class="nav-item" onclick="toggleLang()">
+      <span class="nav-icon">🌐</span>
+      <span class="nav-label" data-i18n="nav.language">Language</span>
+    </button>
+    <button class="nav-item theme-toggle">
+      <span class="nav-icon">🌙</span>
+      <span class="nav-label" data-i18n="nav.theme">Theme</span>
+    </button>
+  </nav>
 
   <div class="toast-container" id="toast-container"></div>
   <script src="/js/lang.js"></script>

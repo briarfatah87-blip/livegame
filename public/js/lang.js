@@ -7,6 +7,8 @@
       "nav.schedule": "📅 Schedule",
       "nav.admin": "⚙️ Admin",
       "nav.installApp": "Install App",
+      "nav.theme": "Theme",
+      "nav.language": "Language",
 
       // Hero
       "hero.tag": "🌐 P2P Powered Streaming",
@@ -180,6 +182,8 @@
       "nav.schedule": "📅 الجدول",
       "nav.admin": "⚙️ الإدارة",
       "nav.installApp": "تثبيت التطبيق",
+      "nav.theme": "المظهر",
+      "nav.language": "اللغة",
 
       // Hero
       "hero.tag": "🌐 بث مدعوم بتقنية P2P",
