@@ -686,6 +686,13 @@
   }
 }
 
+@media (max-width: 768px) {
+  /* Keep the last watch card clear of the fixed bottom nav on mobile. */
+  .player-area {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom));
+  }
+}
+
 @media (max-width: 400px) {
   .score-card-teams {
     gap: 4px;

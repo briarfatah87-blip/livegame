@@ -600,6 +600,20 @@ input, textarea { font-family: var(--font); }
 
 @media (max-width: 768px) {
   .bottom-nav { display: flex; }
+
+  .main-content {
+    padding-bottom: calc(78px + env(safe-area-inset-bottom));
+  }
+
+  .bottom-nav {
+    height: calc(70px + env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .bottom-nav .nav-item {
+    padding-top: 6px;
+    padding-bottom: 10px;
+  }
 }
 
 .bottom-nav .nav-item {
@@ -771,20 +785,6 @@ input, textarea { font-family: var(--font); }
 @media (max-width: 480px) {
   .navbar-brand { font-size: 16px; gap: 6px; }
   .navbar { padding: 0 12px; }
-
-  .main-content {
-    padding-bottom: calc(78px + env(safe-area-inset-bottom));
-  }
-
-  .bottom-nav {
-    height: calc(70px + env(safe-area-inset-bottom));
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-
-  .bottom-nav .nav-item {
-    padding-top: 6px;
-    padding-bottom: 10px;
-  }
 }
 
 /* SVG Icons System */
