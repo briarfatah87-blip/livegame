@@ -22,12 +22,10 @@ let deferredPrompt;
 const installBtn = document.getElementById('pwa-install-btn');
 
 // Enhanced standalone mode detection
-const isPwaParam = window.location.search.includes('source=pwa');
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
                    window.matchMedia('(display-mode: fullscreen)').matches ||
                    window.matchMedia('(display-mode: minimal-ui)').matches ||
-                   navigator.standalone || 
-                   isPwaParam;
+                   navigator.standalone;
 
 console.log('[PWA] Standalone Mode:', isStandalone);
 

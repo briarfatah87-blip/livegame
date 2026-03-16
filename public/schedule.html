@@ -197,6 +197,84 @@
     [dir="rtl"] .date-label { text-align: right; }
     [dir="rtl"] .schedule-header { text-align: right; }
     [dir="rtl"] .schedule-teams { text-align: right; }
+
+    @media (max-width: 768px) {
+      .schedule-header {
+        padding: 24px 0 14px;
+      }
+
+      .schedule-header h1 {
+        font-size: 26px;
+      }
+
+      .schedule-controls {
+        gap: 10px;
+      }
+
+      .schedule-search {
+        min-width: 0;
+        max-width: none;
+        width: 100%;
+      }
+
+      .schedule-controls .filters {
+        width: 100%;
+      }
+
+      .schedule-item {
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 14px;
+      }
+
+      .schedule-sep {
+        display: none;
+      }
+
+      .schedule-time {
+        min-width: auto;
+        text-align: left;
+      }
+
+      .schedule-teams {
+        min-width: 0;
+        width: 100%;
+        order: 3;
+      }
+
+      .schedule-score {
+        margin-left: auto;
+        font-size: 17px;
+      }
+
+      .schedule-badge {
+        order: 2;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .schedule-header h1 {
+        font-size: 22px;
+      }
+
+      .schedule-header p {
+        font-size: 14px;
+      }
+
+      .schedule-team-row {
+        font-size: 13px;
+      }
+
+      .schedule-team-logo {
+        width: 20px;
+        height: 20px;
+      }
+
+      .schedule-score {
+        font-size: 16px;
+      }
+    }
   </style>
 </head>
 

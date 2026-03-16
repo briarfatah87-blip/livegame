@@ -602,7 +602,7 @@
   .chat-panel {
     position: relative;
     top: 0;
-    height: 600px;
+    height: clamp(420px, 60vh, 600px);
     border-left: none;
     border-top: 1px solid var(--border);
     padding-bottom: 110px; /* Extra space for mobile bottom nav + safe areas */
@@ -610,13 +610,45 @@
 }
 
 @media (max-width: 600px) {
+  .match-header {
+    align-items: flex-start;
+  }
+
+  .match-actions {
+    width: 100%;
+  }
+
+  .action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
   .p2p-stats-bar {
     flex-direction: column;
     align-items: flex-start;
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .p2p-stat {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .p2p-badge {
+    margin-left: 0;
   }
 
   .score-card-teams {
     gap: 8px;
+  }
+
+  .score-card {
+    padding: 18px 14px;
+  }
+
+  .score-card-score {
+    min-width: 88px;
   }
 
   .score-card-name {
@@ -633,6 +665,24 @@
 
   .match-meta {
     gap: 8px;
+  }
+
+  .match-competition {
+    font-size: 12px;
+  }
+
+  .chat-header {
+    padding: 12px 14px;
+    gap: 8px;
+  }
+
+  .chat-title {
+    font-size: 14px;
+  }
+
+  .chat-online-count {
+    font-size: 11px;
+    padding: 2px 8px;
   }
 }
 
