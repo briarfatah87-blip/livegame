@@ -21,8 +21,9 @@ if ('serviceWorker' in navigator) {
 let deferredPrompt;
 const installBtn = document.getElementById('pwa-install-btn');
 
-// Always show the button as requested
-if (installBtn) {
+// Only show the button if NOT in standalone mode
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+if (installBtn && !isStandalone) {
   installBtn.style.display = 'flex';
 }
 
