@@ -588,9 +588,10 @@
   .chat-panel {
     position: relative;
     top: 0;
-    height: 500px;
+    height: 600px;
     border-left: none;
     border-top: 1px solid var(--border);
+    padding-bottom: 80px; /* Extra space for mobile bottom nav */
   }
 }
 
@@ -601,11 +602,19 @@
   }
 
   .score-card-teams {
-    gap: 12px;
+    gap: 8px;
+  }
+
+  .score-card-name {
+    font-size: 13px;
+    max-width: 100px;
+    line-height: 1.2;
   }
 
   .big-score {
-    font-size: 36px;
+    font-size: 32px;
+    gap: 10px;
+    min-width: 80px;
   }
 }
 
