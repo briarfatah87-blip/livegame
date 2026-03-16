@@ -610,6 +610,15 @@
 }
 
 @media (max-width: 600px) {
+  .player-area {
+    gap: 14px;
+    padding: 12px;
+  }
+
+  .back-link {
+    font-size: 12px;
+  }
+
   .match-header {
     align-items: flex-start;
   }
@@ -621,18 +630,32 @@
   .action-btn {
     width: 100%;
     justify-content: center;
+    font-size: 12px;
   }
 
   .p2p-stats-bar {
     flex-direction: column;
     align-items: flex-start;
-    padding: 12px 14px;
-    gap: 10px;
+    padding: 12px;
+    gap: 8px;
   }
 
   .p2p-stat {
     width: 100%;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 18px auto 1fr;
+    align-items: center;
+    column-gap: 8px;
+    font-size: 12px;
+  }
+
+  .p2p-stat-value {
+    font-size: 14px;
+  }
+
+  .p2p-stat-label {
+    font-size: 11px;
+    justify-self: end;
   }
 
   .p2p-badge {
@@ -644,7 +667,7 @@
   }
 
   .score-card {
-    padding: 18px 14px;
+    padding: 16px 12px;
   }
 
   .score-card-score {
@@ -652,15 +675,24 @@
   }
 
   .score-card-name {
-    font-size: 13px;
+    font-size: 12px;
     max-width: 100px;
     line-height: 1.2;
   }
 
   .big-score {
-    font-size: 32px;
-    gap: 10px;
+    font-size: 30px;
+    gap: 8px;
     min-width: 70px;
+  }
+
+  .match-time {
+    font-size: 12px;
+  }
+
+  .match-venue {
+    margin-top: 12px;
+    font-size: 12px;
   }
 
   .match-meta {
@@ -668,7 +700,7 @@
   }
 
   .match-competition {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .chat-header {
@@ -683,6 +715,67 @@
   .chat-online-count {
     font-size: 11px;
     padding: 2px 8px;
+  }
+
+  .countdown-container {
+    height: 100%;
+    max-height: 100%;
+    justify-content: space-evenly;
+    padding: 8px 6px;
+    gap: 6px;
+    border-radius: 12px;
+    max-width: 100%;
+  }
+
+  .countdown-teams {
+    gap: 8px;
+  }
+
+  .countdown-team {
+    gap: 6px;
+  }
+
+  .countdown-logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    padding: 6px;
+  }
+
+  .countdown-team-name {
+    font-size: 10px;
+    padding: 4px 8px;
+    margin-top: 0;
+  }
+
+  .countdown-vs {
+    font-size: 20px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .countdown-timer {
+    gap: 4px;
+  }
+
+  .countdown-box {
+    min-width: 44px;
+    padding: 6px 5px;
+    border-radius: 12px;
+  }
+
+  .countdown-value {
+    font-size: 18px;
+  }
+
+  .countdown-label {
+    font-size: 7px;
+    letter-spacing: 0.7px;
+    margin-top: 3px;
+  }
+
+  .countdown-message {
+    display: none;
   }
 }
 
@@ -702,12 +795,38 @@
     max-width: 80px;
   }
   .big-score {
-    font-size: 26px;
+    font-size: 24px;
     gap: 6px;
     min-width: 60px;
   }
   .big-score-sep {
     font-size: 18px;
+  }
+
+  .countdown-team-name {
+    font-size: 9px;
+    padding: 3px 6px;
+  }
+
+  .countdown-logo {
+    width: 38px;
+    height: 38px;
+    padding: 5px;
+  }
+
+  .countdown-vs {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+  }
+
+  .countdown-value {
+    font-size: 16px;
+  }
+
+  .countdown-box {
+    min-width: 40px;
+    padding: 5px 4px;
   }
 }
 
@@ -886,9 +1005,172 @@
 }
 
 @media (max-width: 600px) {
-    .countdown-container { padding: 15px; gap: 24px; }
-    .countdown-teams { gap: 15px; }
-    .countdown-logo { border-radius: 20px; }
+  .player-area {
+    gap: 12px;
+    padding: 10px;
+  }
+
+  .back-link {
+    font-size: 11px;
+  }
+
+  .match-competition {
+    font-size: 10px;
+  }
+
+  .action-btn {
+    font-size: 11px;
+    padding: 7px 10px;
+  }
+
+  .p2p-stats-bar {
+    padding: 10px;
+    gap: 6px;
+  }
+
+  .p2p-stat {
+    grid-template-columns: 16px auto 1fr;
+    column-gap: 7px;
+    font-size: 11px;
+  }
+
+  .p2p-stat-value {
+    font-size: 13px;
+  }
+
+  .p2p-stat-label {
+    font-size: 10px;
+  }
+
+  .p2p-badge {
+    font-size: 10px;
+    padding: 4px 10px;
+  }
+
+  .score-card {
+    padding: 14px 10px;
+  }
+
+  .score-card-name {
+    font-size: 11px;
+    max-width: 90px;
+  }
+
+  .big-score {
+    font-size: 26px;
+    gap: 6px;
+    min-width: 62px;
+  }
+
+  .big-score-sep {
+    font-size: 16px;
+  }
+
+  .match-time {
+    font-size: 11px;
+  }
+
+  .match-venue {
+    font-size: 11px;
+    margin-top: 10px;
+  }
+
+  .countdown-container {
+    height: 100%;
+    max-height: 100%;
+    justify-content: space-evenly;
+    padding: 6px 4px;
+    gap: 5px;
+    border-radius: 10px;
+  }
+
+  .countdown-teams {
+    gap: 6px;
+  }
+
+  .countdown-team {
+    gap: 5px;
+  }
+
+  .countdown-logo {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    padding: 5px;
+  }
+
+  .countdown-team-name {
+    font-size: 9px;
+    padding: 3px 7px;
+    margin-top: 0;
+  }
+
+  .countdown-vs {
+    width: 30px;
+    height: 30px;
+    font-size: 17px;
+  }
+
+  .countdown-timer {
+    gap: 3px;
+  }
+
+  .countdown-box {
+    min-width: 40px;
+    padding: 5px 4px;
+    border-radius: 10px;
+  }
+
+  .countdown-value {
+    font-size: 15px;
+  }
+
+  .countdown-label {
+    font-size: 6px;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+
+  .countdown-message {
+    display: none;
+  }
+}
+
+@media (max-width: 400px) {
+  .score-card-name {
+    font-size: 10px;
+    max-width: 74px;
+  }
+
+  .big-score {
+    font-size: 22px;
+    min-width: 54px;
+  }
+
+  .countdown-logo {
+    width: 34px;
+    height: 34px;
+    padding: 4px;
+  }
+
+  .countdown-vs {
+    width: 28px;
+    height: 28px;
+    font-size: 15px;
+  }
+
+  .countdown-box {
+    min-width: 35px;
+    padding: 4px 3px;
+  }
+
+  .countdown-value {
+    font-size: 14px;
+  }
+
+  .countdown-label {
+    font-size: 6px;
+  }
 }
 
 /* ─── RTL Watch ─────────────────────────────────────────────────────────────── */
