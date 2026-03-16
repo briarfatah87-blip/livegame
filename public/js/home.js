@@ -35,7 +35,6 @@ function renderMatchCard(match) {
   const isFinished = match.status === 'finished';
   const isUpcoming = match.status === 'upcoming';
   const href = isUpcoming || isLive ? `/watch.html?id=${match.id}` : '#';
-  const competitionEmoji = getCompetitionEmoji(match.competition);
 
   const statusBadge = isLive
     ? `<div class="status-badge live"><div class="live-dot"></div>LIVE ${match.minute ? `${match.minute}'` : ''}</div>`
