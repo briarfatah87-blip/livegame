@@ -1,4 +1,15 @@
 (function () {
+  window.currentNewsFontSize = 18;
+  window.changeFontSize = function(stamp) {
+    window.currentNewsFontSize += stamp * 2;
+    if (window.currentNewsFontSize < 14) window.currentNewsFontSize = 14;
+    if (window.currentNewsFontSize > 36) window.currentNewsFontSize = 36;
+    const body = document.getElementById('news-detail-content');
+    if (body) {
+      body.style.fontSize = window.currentNewsFontSize + 'px';
+    }
+  };
+
   function escapeHtml(str) {
     return String(str || '')
       .replace(/&/g, '&amp;')
@@ -50,9 +61,13 @@
     return `
       <div class="news-detail-card" dir="auto">
         <div class="news-detail-meta" dir="auto">${formatDate(item.created_at)}</div>
+        <div class="news-font-controls">
+          <button class="font-btn" onclick="window.changeFontSize(1)" title="گەورەکردنی فۆنت (Increase Font)">+</button>
+          <button class="font-btn" onclick="window.changeFontSize(-1)" title="بچوککردنی فۆنت (Decrease Font)">-</button>
+        </div>
         <h1 class="news-detail-title" dir="auto">${escapeHtml(item.title)}</h1>
         ${item.image_url ? `<div class="news-detail-image-wrap"><img src="${item.image_url}" alt="${escapeHtml(item.title)}"></div>` : ''}
-        <div class="news-detail-body" dir="auto">${nl2br(item.summary || '')}</div>
+        <div class="news-detail-body" id="news-detail-content" dir="auto">${nl2br(item.summary || '')}</div>
         ${item.link_url ? `<a class="btn btn-primary news-source-link" href="${item.link_url}" target="_blank" rel="noopener noreferrer" dir="auto">Open Source Link</a>` : ''}
       </div>
     `;

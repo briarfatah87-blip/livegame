@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Cairo:wght@400;600;700&family=Tajawal:wght@400;500;700;800&display=swap');
 
 /* ─── CSS Variables ─────────────────────────────────────────────────────────── */
 :root {
@@ -565,8 +565,40 @@ input, textarea { font-family: var(--font); }
 
 .news-detail-body {
   color: var(--text-secondary);
-  font-size: 16px;
-  line-height: 1.8;
+  font-size: 18px; /* Default size increased */
+  line-height: 1.85;
+  font-family: 'Tajawal', 'Cairo', var(--font);
+  transition: font-size 0.2s ease;
+}
+
+.news-font-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.font-btn {
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.font-btn:hover {
+  background: var(--bg-glass-hover);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: var(--accent);
+}
+:root[data-theme="light"] .font-btn:hover {
+  border-color: rgba(0, 0, 0, 0.15);
 }
 
 .news-source-link {
@@ -615,6 +647,39 @@ input, textarea { font-family: var(--font); }
   border-bottom: 1px solid var(--border);
 }
 .match-short-news-item:last-child { border-bottom: none; }
+
+/* ─── Match Lineup (Watch page) ─────────────────────────────────────────────── */
+.match-lineup {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid #6bcbff;
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-top: 10px;
+}
+.match-lineup-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6bcbff;
+  white-space: nowrap;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+.match-lineup-body {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  white-space: pre-wrap;
+  flex: 1;
+}
 
 /* ─── Admin Match News Items ────────────────────────────────────────────────── */
 .match-news-item {

@@ -102,7 +102,7 @@ app.get('/api/matches/:id', (req, res) => {
 app.post('/api/matches', requireAdmin, (req, res) => {
   const {
     title, team_home, team_home_logo, team_away, team_away_logo,
-    stream_url = '', start_time, status = 'upcoming', competition = 'Football',
+    stream_url = '', iframe_url = '', lineup = '', start_time, status = 'upcoming', competition = 'Football',
     competition_logo = '', stadium = '', score_home = 0, score_away = 0, minute = 0,
     seo_description = ''
   } = req.body;
@@ -111,10 +111,10 @@ app.post('/api/matches', requireAdmin, (req, res) => {
   }
   const info = db.prepare(`
     INSERT INTO matches (title, team_home, team_home_logo, team_away, team_away_logo,
-      stream_url, start_time, status, competition, competition_logo, stadium, score_home, score_away, minute, seo_description)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      stream_url, iframe_url, lineup, start_time, status, competition, competition_logo, stadium, score_home, score_away, minute, seo_description)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(title, team_home, team_home_logo, team_away, team_away_logo,
-    stream_url, start_time, status, competition, competition_logo, stadium,
+    stream_url, iframe_url, lineup, start_time, status, competition, competition_logo, stadium,
     score_home, score_away, minute, seo_description);
   res.json({ id: info.lastInsertRowid, message: 'Match created' });
 });
@@ -125,7 +125,7 @@ app.patch('/api/matches/:id', requireAdmin, (req, res) => {
   if (!match) return res.status(404).json({ error: 'Match not found' });
   const {
     title, team_home, team_home_logo, team_away, team_away_logo,
-    stream_url, start_time, status, competition, competition_logo, stadium,
+    stream_url, iframe_url, lineup, start_time, status, competition, competition_logo, stadium,
     score_home, score_away, minute, seo_description
   } = req.body;
   db.prepare(`
@@ -136,6 +136,8 @@ app.patch('/api/matches/:id', requireAdmin, (req, res) => {
       team_away = COALESCE(?, team_away),
       team_away_logo = COALESCE(?, team_away_logo),
       stream_url = COALESCE(?, stream_url),
+      iframe_url = COALESCE(?, iframe_url),
+      lineup = COALESCE(?, lineup),
       start_time = COALESCE(?, start_time),
       status = COALESCE(?, status),
       competition = COALESCE(?, competition),
@@ -147,7 +149,7 @@ app.patch('/api/matches/:id', requireAdmin, (req, res) => {
       seo_description = COALESCE(?, seo_description)
     WHERE id = ?
   `).run(title, team_home, team_home_logo, team_away, team_away_logo,
-    stream_url, start_time, status, competition, competition_logo, stadium,
+    stream_url, iframe_url, lineup, start_time, status, competition, competition_logo, stadium,
     score_home, score_away, minute, seo_description, req.params.id);
 
   // Broadcast match update to viewers

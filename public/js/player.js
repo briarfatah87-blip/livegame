@@ -20,7 +20,7 @@ async function loadMatch() {
     if (matchData.status === 'upcoming') {
       showCountdown(matchData);
     } else {
-      initPlayer(matchData.stream_url);
+      initPlayer(matchData.stream_url, matchData.iframe_url);
     }
   } catch (e) {
     showOverlay(t('player.errorLoadingMatch'), true);
@@ -105,6 +105,16 @@ function applyMatchInfo(m) {
     document.getElementById('match-venue').style.display = 'flex';
     document.getElementById('stadium-name').textContent = m.stadium;
   }
+
+  // Lineup / Round Schedule
+  if (m.lineup) {
+    const lineupEl = document.getElementById('match-lineup');
+    const lineupBody = document.getElementById('match-lineup-body');
+    if (lineupEl && lineupBody) {
+      lineupBody.textContent = m.lineup;
+      lineupEl.style.display = 'flex';
+    }
+  }
 }
 
 // ─── Player ───────────────────────────────────────────────────────────────────
@@ -133,9 +143,21 @@ function formatBytes(bytes) {
   return (bytes / 1024 / 1024).toFixed(2) + ' MB/s';
 }
 
-function initPlayer(streamUrl) {
+function initPlayer(streamUrl, iframeUrl) {
   const video = document.getElementById('video-player');
   const iframe = document.getElementById('iframe-player');
+
+  // Prefer dedicated iframe_url if provided
+  if (iframeUrl) {
+    console.log('[Player] Using dedicated iframe_url');
+    video.classList.add('hidden');
+    iframe.classList.remove('hidden');
+    document.getElementById('p2p-stats-bar').style.display = 'none';
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation');
+    iframe.src = iframeUrl;
+    document.getElementById('player-overlay').classList.add('hidden');
+    return;
+  }
 
   if (!streamUrl) {
     if (matchData && matchData.status === 'upcoming') {

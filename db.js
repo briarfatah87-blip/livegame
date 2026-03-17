@@ -71,9 +71,13 @@ db.exec(`
 // Ensure seo_description column exists for existing databases
 try {
   db.exec('ALTER TABLE matches ADD COLUMN seo_description TEXT DEFAULT ""');
-} catch (e) {
-  // Column already exists or other error
-}
+} catch (e) {}
+try {
+  db.exec('ALTER TABLE matches ADD COLUMN iframe_url TEXT DEFAULT ""');
+} catch (e) {}
+try {
+  db.exec('ALTER TABLE matches ADD COLUMN lineup TEXT DEFAULT ""');
+} catch (e) {}
 
 // Seed demo data only if matches table is empty
 const count = db.prepare('SELECT COUNT(*) as c FROM matches').get();

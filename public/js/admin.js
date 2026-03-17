@@ -174,6 +174,8 @@ async function editMatch(id) {
     document.getElementById('f-score-away').value = m.score_away;
     document.getElementById('f-minute').value = m.minute || 0;
     document.getElementById('f-stream-url').value = m.stream_url || '';
+    document.getElementById('f-iframe-url').value = m.iframe_url || '';
+    document.getElementById('f-lineup').value = m.lineup || '';
     document.getElementById('f-seo-description').value = m.seo_description || '';
 
     // Convert datetime to local datetime-local format
@@ -274,6 +276,8 @@ async function submitMatch() {
     score_away: parseInt(document.getElementById('f-score-away').value) || 0,
     minute: parseInt(document.getElementById('f-minute').value) || 0,
     stream_url: document.getElementById('f-stream-url').value.trim(),
+    iframe_url: document.getElementById('f-iframe-url').value.trim(),
+    lineup: document.getElementById('f-lineup').value.trim(),
     seo_description: document.getElementById('f-seo-description').value.trim(),
   };
 
@@ -323,8 +327,10 @@ async function deleteMatch(id) {
 
 function resetForm() {
   editingMatchId = null;
-  ['f-title','f-home','f-home-logo','f-away','f-away-logo','f-competition','f-stadium','f-stream-url','f-seo-description'].forEach(id => {
+  ['f-title','f-home','f-home-logo','f-away','f-away-logo','f-competition','f-stadium','f-stream-url','f-iframe-url','f-seo-description'].forEach(id => {
     document.getElementById(id).value = '';
+  });
+  document.getElementById('f-lineup').value = '';
   });
   document.getElementById('f-status').value = 'upcoming';
   document.getElementById('f-score-home').value = 0;
