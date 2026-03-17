@@ -123,7 +123,7 @@ function applyMatchInfo(m) {
   }
 
   // Standings / Rankings Iframe
-  if (m.iframe_url) {
+  if (m.iframe_url && isLikelyEmbedValue(m.iframe_url)) {
     const standingsEl = document.getElementById('match-standings');
     const standingsBody = document.getElementById('match-standings-body');
     if (standingsEl && standingsBody) {
@@ -224,6 +224,14 @@ function decodeEmbedValue(rawValue) {
   return value;
 }
 
+  function isLikelyEmbedValue(rawValue) {
+    const value = decodeEmbedValue(rawValue);
+    if (!value) return false;
+    if (/<iframe[\s\S]*?>/i.test(value)) return true;
+    if (/^https?:\/\//i.test(value)) return true;
+    return false;
+  }
+
 function applyEmbedToIframe(iframe, rawValue) {
   const value = decodeEmbedValue(rawValue);
   if (!value) return false;
@@ -251,6 +259,21 @@ function applyEmbedToIframe(iframe, rawValue) {
 
   iframe.src = value;
   return true;
+}
+
+function getPlayableHlsSource(streamUrl) {
+  try {
+    const u = new URL(streamUrl, window.location.origin);
+    const isM3u = /\.m3u8(\?|$)/i.test(u.pathname + u.search);
+    const isExternal = u.origin !== window.location.origin;
+
+    if (isM3u && isExternal) {
+      return `/api/hls-proxy?url=${encodeURIComponent(u.toString())}`;
+    }
+    return u.toString();
+  } catch (e) {
+    return streamUrl;
+  }
 }
 
 function initPlayer(streamUrl) {
@@ -288,6 +311,7 @@ function initPlayer(streamUrl) {
   // Else: Use HLS player
   video.classList.remove('hidden');
   iframe.classList.add('hidden');
+  const playableSource = getPlayableHlsSource(streamUrl);
   
 
   showOverlay(t('watch.initP2P'));
@@ -332,7 +356,7 @@ function initPlayer(streamUrl) {
     networkRecoveryAttempts = 0;
     hls = new Hls(hlsConfig || {});
     if (engine) engine.bindHls(hls);
-    hls.loadSource(streamUrl);
+    hls.loadSource(playableSource);
     hls.attachMedia(video);
 
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -343,6 +367,10 @@ function initPlayer(streamUrl) {
       if (data.fatal) {
         switch (data.type) {
           case Hls.ErrorTypes.NETWORK_ERROR:
+            if (data?.response?.code === 403) {
+              showOverlay('Stream host returned 403 Forbidden. Check source server hotlink/referrer rules.', true);
+              return;
+            }
             showOverlay(t('watch.networkError'), false);
             networkRecoveryAttempts += 1;
             if (networkRecoveryAttempts <= 3) {
@@ -365,6 +393,7 @@ function initPlayer(streamUrl) {
             break;
           default:
             showOverlay(t('watch.streamError'), true);
+            break;
         }
       }
     });
@@ -374,7 +403,7 @@ function initPlayer(streamUrl) {
 
   } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
     // Safari native HLS
-    video.src = streamUrl;
+    video.src = playableSource;
     video.addEventListener('loadedmetadata', () => hideOverlay());
     tryAutoPlay(video);
   } else {

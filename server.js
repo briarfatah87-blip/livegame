@@ -69,6 +69,69 @@ app.get('/js/pwa-register.js', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'js', 'pwa-register.js'));
 });
 
+// HLS proxy: helps when upstream blocks browser hotlinking but allows server-side fetch.
+app.get('/api/hls-proxy', async (req, res) => {
+  const { url } = req.query;
+  if (!url || typeof url !== 'string') {
+    return res.status(400).json({ error: 'Missing url query parameter' });
+  }
+
+  let target;
+  try {
+    target = new URL(url);
+    if (!/^https?:$/.test(target.protocol)) throw new Error('Invalid protocol');
+  } catch (e) {
+    return res.status(400).json({ error: 'Invalid target URL' });
+  }
+
+  try {
+    const upstream = await fetch(target.toString(), {
+      headers: {
+        // Mirror a browser-like request; many stream hosts check these.
+        'User-Agent': req.get('user-agent') || 'Mozilla/5.0',
+        'Origin': `${target.protocol}//${target.host}`,
+        'Referer': `${target.protocol}//${target.host}/`
+      }
+    });
+
+    if (!upstream.ok) {
+      return res.status(upstream.status).send(`Upstream error: ${upstream.status}`);
+    }
+
+    const contentType = upstream.headers.get('content-type') || '';
+    const isPlaylist = /mpegurl|x-mpegurl|application\/vnd\.apple\.mpegurl|\.m3u8/i.test(contentType) || target.pathname.endsWith('.m3u8');
+
+    if (isPlaylist) {
+      const playlist = await upstream.text();
+      const rewritten = playlist
+        .split('\n')
+        .map((line) => {
+          const trimmed = line.trim();
+          if (!trimmed || trimmed.startsWith('#')) return line;
+          try {
+            const absolute = new URL(trimmed, target).toString();
+            return `/api/hls-proxy?url=${encodeURIComponent(absolute)}`;
+          } catch (e) {
+            return line;
+          }
+        })
+        .join('\n');
+
+      res.set('Content-Type', 'application/vnd.apple.mpegurl');
+      res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+      return res.send(rewritten);
+    }
+
+    const buf = Buffer.from(await upstream.arrayBuffer());
+    if (contentType) res.set('Content-Type', contentType);
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+    return res.send(buf);
+  } catch (err) {
+    console.error('[HLS Proxy] Error:', err.message);
+    return res.status(502).json({ error: 'Failed to fetch stream source' });
+  }
+});
+
 // ─── Middleware: admin auth ───────────────────────────────────────────────────
 function requireAdmin(req, res, next) {
   const token = req.headers['x-admin-token'];
