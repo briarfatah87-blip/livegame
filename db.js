@@ -46,6 +46,26 @@ db.exec(`
     reason TEXT DEFAULT '',
     banned_at TEXT DEFAULT (datetime('now'))
   );
+
+  CREATE TABLE IF NOT EXISTS news (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    summary TEXT DEFAULT '',
+    image_url TEXT DEFAULT '',
+    link_url TEXT DEFAULT '',
+    is_published INTEGER DEFAULT 1,
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS match_news (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    match_id INTEGER NOT NULL,
+    title_en TEXT NOT NULL DEFAULT '',
+    title_ar TEXT NOT NULL DEFAULT '',
+    created_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE
+  );
 `);
 
 // Ensure seo_description column exists for existing databases

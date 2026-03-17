@@ -213,6 +213,129 @@ app.get('/api/viewers', (req, res) => {
   res.json(counts);
 });
 
+// GET news (public)
+app.get('/api/news', (req, res) => {
+  const parsedLimit = parseInt(req.query.limit, 10);
+  let rows;
+
+  if (Number.isFinite(parsedLimit) && parsedLimit > 0) {
+    const limit = Math.min(parsedLimit, 50);
+    rows = db.prepare(
+      'SELECT * FROM news WHERE is_published = 1 ORDER BY datetime(created_at) DESC LIMIT ?'
+    ).all(limit);
+  } else {
+    rows = db.prepare(
+      'SELECT * FROM news WHERE is_published = 1 ORDER BY datetime(created_at) DESC'
+    ).all();
+  }
+
+  res.json(rows);
+});
+
+// GET single news item (public)
+app.get('/api/news/:id', (req, res) => {
+  const row = db.prepare('SELECT * FROM news WHERE id = ? AND is_published = 1').get(req.params.id);
+  if (!row) return res.status(404).json({ error: 'News not found' });
+  res.json(row);
+});
+
+// GET all news for admin
+app.get('/api/admin/news', requireAdmin, (req, res) => {
+  const rows = db.prepare('SELECT * FROM news ORDER BY datetime(created_at) DESC').all();
+  res.json(rows);
+});
+
+// POST create news (admin)
+app.post('/api/admin/news', requireAdmin, (req, res) => {
+  const {
+    title,
+    summary = '',
+    image_url = '',
+    link_url = '',
+    is_published = 1
+  } = req.body;
+
+  if (!title || !title.trim()) {
+    return res.status(400).json({ error: 'Title is required' });
+  }
+
+  const info = db.prepare(`
+    INSERT INTO news (title, summary, image_url, link_url, is_published, updated_at)
+    VALUES (?, ?, ?, ?, ?, datetime('now'))
+  `).run(
+    title.trim(),
+    summary.trim(),
+    image_url.trim(),
+    link_url.trim(),
+    is_published ? 1 : 0
+  );
+
+  res.json({ id: info.lastInsertRowid, message: 'News created' });
+});
+
+// PATCH update news (admin)
+app.patch('/api/admin/news/:id', requireAdmin, (req, res) => {
+  const row = db.prepare('SELECT * FROM news WHERE id = ?').get(req.params.id);
+  if (!row) return res.status(404).json({ error: 'News not found' });
+
+  const {
+    title,
+    summary,
+    image_url,
+    link_url,
+    is_published
+  } = req.body;
+
+  db.prepare(`
+    UPDATE news SET
+      title = COALESCE(?, title),
+      summary = COALESCE(?, summary),
+      image_url = COALESCE(?, image_url),
+      link_url = COALESCE(?, link_url),
+      is_published = COALESCE(?, is_published),
+      updated_at = datetime('now')
+    WHERE id = ?
+  `).run(
+    title?.trim(),
+    summary?.trim(),
+    image_url?.trim(),
+    link_url?.trim(),
+    typeof is_published === 'undefined' ? null : (is_published ? 1 : 0),
+    req.params.id
+  );
+
+  res.json({ message: 'News updated' });
+});
+
+// DELETE news (admin)
+app.delete('/api/admin/news/:id', requireAdmin, (req, res) => {
+  db.prepare('DELETE FROM news WHERE id = ?').run(req.params.id);
+  res.json({ message: 'News deleted' });
+});
+
+// ─── Match News (short per-game news items) ───────────────────────────────────
+// GET all news for a match (public)
+app.get('/api/matches/:id/news', (req, res) => {
+  const items = db.prepare('SELECT * FROM match_news WHERE match_id = ? ORDER BY created_at DESC').all(req.params.id);
+  res.json(items);
+});
+
+// POST add news to a match (admin)
+app.post('/api/admin/matches/:id/news', requireAdmin, (req, res) => {
+  const { title_en, title_ar } = req.body;
+  if (!title_en && !title_ar) return res.status(400).json({ error: 'At least one title is required' });
+  const info = db.prepare(
+    'INSERT INTO match_news (match_id, title_en, title_ar) VALUES (?, ?, ?)'
+  ).run(req.params.id, (title_en || '').trim(), (title_ar || '').trim());
+  res.json({ id: info.lastInsertRowid, message: 'Match news added' });
+});
+
+// DELETE a match news item (admin)
+app.delete('/api/admin/match-news/:newsId', requireAdmin, (req, res) => {
+  db.prepare('DELETE FROM match_news WHERE id = ?').run(req.params.newsId);
+  res.json({ message: 'Match news deleted' });
+});
+
 // Admin verify token
 app.post('/api/admin/verify', (req, res) => {
   const { token } = req.body;

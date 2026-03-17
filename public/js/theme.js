@@ -9,13 +9,20 @@
       btns.forEach(btn => {
         const moon = btn.querySelector('.icon-moon');
         const sun = btn.querySelector('.icon-sun');
-        if (moon && sun) {
+        const teal = btn.querySelector('.icon-teal');
+        if (moon && sun && teal) {
           if (theme === 'dark') {
             moon.classList.remove('hidden');
             sun.classList.add('hidden');
-          } else {
+            teal.classList.add('hidden');
+          } else if (theme === 'light') {
             moon.classList.add('hidden');
             sun.classList.remove('hidden');
+            teal.classList.add('hidden');
+          } else if (theme === 'teal') {
+            moon.classList.add('hidden');
+            sun.classList.add('hidden');
+            teal.classList.remove('hidden');
           }
         }
       });
@@ -25,7 +32,14 @@
     btns.forEach(btn => {
       btn.addEventListener('click', function() {
         const current = document.documentElement.getAttribute('data-theme') || 'dark';
-        const next = current === 'dark' ? 'light' : 'dark';
+        let next;
+        if (current === 'dark') {
+          next = 'light';
+        } else if (current === 'light') {
+          next = 'teal';
+        } else {
+          next = 'dark';
+        }
         document.documentElement.setAttribute('data-theme', next);
         localStorage.setItem('theme', next);
         updateIcon(next);

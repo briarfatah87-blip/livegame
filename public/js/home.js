@@ -158,6 +158,62 @@ function showToast(msg, type = 'info') {
   setTimeout(() => toast.remove(), 3500);
 }
 
-document.addEventListener('DOMContentLoaded', loadMatches);
+function escapeHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function renderNewsCard(item) {
+  const hasImage = Boolean(item.image_url);
+  const href = `/news.html?id=${item.id}`;
+
+  return `
+    <a class="news-card news-card-home" href="${href}">
+      <div class="news-image-wrap">
+        ${hasImage ? `<img src="${item.image_url}" alt="${escapeHtml(item.title)}" onerror="this.outerHTML='<div class=&quot;news-image-fallback&quot;>NEWS</div>'">` : '<div class="news-image-fallback">NEWS</div>'}
+      </div>
+      <div class="news-content">
+        <h3 class="news-title">${escapeHtml(item.title)}</h3>
+      </div>
+    </a>
+  `;
+}
+
+async function loadNews() {
+  const grid = document.getElementById('news-grid');
+  const empty = document.getElementById('news-empty');
+  if (!grid || !empty) return;
+
+  try {
+    const res = await fetch('/api/news?limit=4');
+    const rows = await res.json();
+
+    if (!rows.length) {
+      grid.style.display = 'none';
+      empty.style.display = 'block';
+      grid.innerHTML = '';
+      return;
+    }
+
+    empty.style.display = 'none';
+    grid.style.display = 'grid';
+    grid.innerHTML = rows.map(renderNewsCard).join('');
+  } catch (err) {
+    grid.style.display = 'none';
+    empty.style.display = 'block';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadMatches();
+  loadNews();
+});
 // Auto-refresh every 30 seconds
-setInterval(loadMatches, 30000);
+setInterval(() => {
+  loadMatches();
+  loadNews();
+}, 30000);

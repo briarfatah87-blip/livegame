@@ -344,6 +344,7 @@
   position: sticky;
   top: 64px;
   height: calc(100vh - 64px);
+  margin-left: 10px;
   display: flex;
   flex-direction: column;
   background: var(--bg-secondary);
@@ -603,6 +604,7 @@
     position: relative;
     top: 0;
     height: clamp(420px, 60vh, 600px);
+    margin-left: 0;
     border-left: none;
     border-top: 1px solid var(--border);
     padding-bottom: 110px; /* Extra space for mobile bottom nav + safe areas */

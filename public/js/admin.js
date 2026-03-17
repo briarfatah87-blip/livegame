@@ -2,6 +2,30 @@
 
 let adminToken = localStorage.getItem('admin_token') || null;
 let editingMatchId = null;
+let editingNewsId = null;
+
+async function fetchJsonSafe(url, options = {}) {
+  const res = await fetch(url, options);
+  const raw = await res.text();
+
+  let data = null;
+  if (raw) {
+    try {
+      data = JSON.parse(raw);
+    } catch (e) {
+      if (raw.trim().startsWith('<!DOCTYPE') || raw.trim().startsWith('<html')) {
+        throw new Error('Server returned HTML instead of JSON. Restart server to load latest API routes.');
+      }
+      throw new Error('Invalid server response.');
+    }
+  }
+
+  if (!res.ok) {
+    throw new Error(data?.error || `Request failed (${res.status})`);
+  }
+
+  return data;
+}
 
 // ─── Toast ────────────────────────────────────────────────────────────────────
 function showToast(msg, type = '') {
@@ -87,6 +111,10 @@ function showPanel(panel, skipReset = false) {
     document.getElementById('match-form-title').textContent = t('admin.addNewMatchTitle');
     document.getElementById('submit-match-btn').textContent = t('admin.saveMatchBtn');
   }
+  if (panel === 'news') {
+    resetNewsForm();
+    loadNewsTable();
+  }
   if (panel === 'bans') loadBansTable();
 }
 
@@ -156,8 +184,68 @@ async function editMatch(id) {
     document.getElementById('match-form-title').textContent = t('admin.editMatchTitle');
     document.getElementById('submit-match-btn').textContent = t('admin.updateMatchBtn');
     showPanel('add-match', true);
+    document.getElementById('match-news-section').style.display = 'block';
+    loadMatchNews(id);
   } catch (e) {
     showToast(t('admin.failedLoadMatch'), 'error');
+  }
+}
+
+async function loadMatchNews(matchId) {
+  const list = document.getElementById('match-news-list');
+  list.innerHTML = '<div style="color:var(--text-muted);font-size:13px;">Loading...</div>';
+  try {
+    const items = await fetchJsonSafe(`/api/matches/${matchId}/news`, { headers: { 'x-admin-token': adminToken } });
+    if (!items.length) {
+      list.innerHTML = '<div style="color:var(--text-muted);font-size:13px;">No short news yet.</div>';
+      return;
+    }
+    list.innerHTML = items.map(item => `
+      <div class="match-news-item">
+        <div class="match-news-titles">
+          ${item.title_en ? `<span class="match-news-title-en">${escapeHtml(item.title_en)}</span>` : ''}
+          ${item.title_ar ? `<span class="match-news-title-ar" dir="rtl">${escapeHtml(item.title_ar)}</span>` : ''}
+        </div>
+        <button class="tbl-btn delete" onclick="deleteMatchNews(${item.id})" title="Delete">
+          <svg viewBox="0 0 24 24" class="icon icon-sm" style="stroke:currentColor;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4h6v2"></path></svg>
+        </button>
+      </div>
+    `).join('');
+  } catch (e) {
+    list.innerHTML = '<div style="color:var(--red);font-size:13px;">Failed to load news.</div>';
+  }
+}
+
+async function addMatchNews() {
+  const titleEn = document.getElementById('mn-title-en').value.trim();
+  const titleAr = document.getElementById('mn-title-ar').value.trim();
+  if (!titleEn && !titleAr) { showToast('Enter at least one title', 'error'); return; }
+  try {
+    await fetchJsonSafe(`/api/admin/matches/${editingMatchId}/news`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-token': adminToken },
+      body: JSON.stringify({ title_en: titleEn, title_ar: titleAr })
+    });
+    document.getElementById('mn-title-en').value = '';
+    document.getElementById('mn-title-ar').value = '';
+    showToast('News added', 'success');
+    loadMatchNews(editingMatchId);
+  } catch (e) {
+    showToast(e.message || 'Failed to add news', 'error');
+  }
+}
+
+async function deleteMatchNews(newsId) {
+  if (!confirm('Delete this news item?')) return;
+  try {
+    await fetchJsonSafe(`/api/admin/match-news/${newsId}`, {
+      method: 'DELETE',
+      headers: { 'x-admin-token': adminToken }
+    });
+    showToast('Deleted', 'success');
+    loadMatchNews(editingMatchId);
+  } catch (e) {
+    showToast(e.message || 'Failed to delete', 'error');
   }
 }
 
@@ -243,6 +331,161 @@ function resetForm() {
   document.getElementById('f-score-away').value = 0;
   document.getElementById('f-minute').value = 0;
   document.getElementById('f-start-time').value = '';
+  document.getElementById('match-news-section').style.display = 'none';
+  document.getElementById('match-news-list').innerHTML = '';
+  document.getElementById('mn-title-en').value = '';
+  document.getElementById('mn-title-ar').value = '';
+}
+
+// ─── News ─────────────────────────────────────────────────────────────────────
+async function loadNewsTable() {
+  const tbody = document.getElementById('news-tbody');
+  if (!tbody) return;
+
+  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr>';
+  try {
+    const rows = await fetchJsonSafe('/api/admin/news', { headers: { 'x-admin-token': adminToken } });
+
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px;">No news posts yet.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = rows.map(n => `
+      <tr>
+        <td style="color:var(--text-muted);">${n.id}</td>
+        <td>
+          <div style="font-weight:700;">${escapeHtml(n.title)}</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">${escapeHtml((n.summary || '').slice(0, 110))}</div>
+        </td>
+        <td><div class="status-badge ${n.is_published ? 'live' : 'finished'}">${n.is_published ? 'YES' : 'NO'}</div></td>
+        <td style="font-size:12px;color:var(--text-muted);">${new Date(n.created_at).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</td>
+        <td>
+          <div class="table-actions">
+            <button class="tbl-btn edit" onclick="editNews(${n.id})">Edit</button>
+            <button class="tbl-btn del" onclick="deleteNews(${n.id})">Delete</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  } catch (e) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--red);padding:24px;">Failed to load news.</td></tr>';
+  }
+}
+
+async function editNews(id) {
+  try {
+    const rows = await fetchJsonSafe('/api/admin/news', { headers: { 'x-admin-token': adminToken } });
+    const news = rows.find(n => n.id === id);
+    if (!news) {
+      showToast('News not found.', 'error');
+      return;
+    }
+
+    editingNewsId = id;
+    document.getElementById('n-title').value = news.title || '';
+    setNewsSummaryValue(news.summary || '');
+    document.getElementById('n-image').value = news.image_url || '';
+    document.getElementById('n-link').value = news.link_url || '';
+    document.getElementById('n-published').value = news.is_published ? '1' : '0';
+    document.getElementById('news-form-title').textContent = 'Edit News';
+    document.getElementById('submit-news-btn').textContent = 'Update News';
+  } catch (e) {
+    showToast('Failed to load news item.', 'error');
+  }
+}
+
+async function submitNews() {
+  const title = document.getElementById('n-title').value.trim();
+  if (!title) {
+    showToast('Title is required.', 'error');
+    return;
+  }
+
+  const payload = {
+    title,
+    summary: getNewsSummaryValue(),
+    image_url: document.getElementById('n-image').value.trim(),
+    link_url: document.getElementById('n-link').value.trim(),
+    is_published: document.getElementById('n-published').value === '1'
+  };
+
+  const btn = document.getElementById('submit-news-btn');
+  btn.disabled = true;
+  btn.textContent = editingNewsId ? 'Updating...' : 'Saving...';
+
+  try {
+    const url = editingNewsId ? `/api/admin/news/${editingNewsId}` : '/api/admin/news';
+    const method = editingNewsId ? 'PATCH' : 'POST';
+    await fetchJsonSafe(url, {
+      method,
+      headers: { 'Content-Type': 'application/json', 'x-admin-token': adminToken },
+      body: JSON.stringify(payload)
+    });
+
+    showToast(editingNewsId ? 'News updated.' : 'News created.', 'success');
+    resetNewsForm();
+    loadNewsTable();
+  } catch (e) {
+    showToast(e.message || 'Failed to save news.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = editingNewsId ? 'Update News' : 'Save News';
+  }
+}
+
+async function deleteNews(id) {
+  if (!confirm('Delete this news item?')) return;
+  try {
+    await fetchJsonSafe(`/api/admin/news/${id}`, {
+      method: 'DELETE',
+      headers: { 'x-admin-token': adminToken }
+    });
+    showToast('News deleted.', 'success');
+    loadNewsTable();
+  } catch (e) {
+    showToast('Failed to delete news.', 'error');
+  }
+}
+
+function resetNewsForm() {
+  editingNewsId = null;
+  if (!document.getElementById('n-title')) return;
+  document.getElementById('n-title').value = '';
+  setNewsSummaryValue('');
+  document.getElementById('n-image').value = '';
+  document.getElementById('n-link').value = '';
+  document.getElementById('n-published').value = '1';
+  document.getElementById('news-form-title').textContent = 'Add News';
+  document.getElementById('submit-news-btn').textContent = 'Save News';
+}
+
+function getNewsSummaryValue() {
+  const editor = document.getElementById('n-summary-editor');
+  if (!editor) return '';
+  return editor.innerText.trim();
+}
+
+function setNewsSummaryValue(value) {
+  const editor = document.getElementById('n-summary-editor');
+  if (!editor) return;
+  editor.innerText = value || '';
+}
+
+function formatNewsSummary(command) {
+  const editor = document.getElementById('n-summary-editor');
+  if (!editor) return;
+  editor.focus();
+  document.execCommand(command, false, null);
+}
+
+function escapeHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 // ─── Bans ─────────────────────────────────────────────────────────────────────

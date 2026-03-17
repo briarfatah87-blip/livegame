@@ -343,6 +343,30 @@ function updateMeta(name, content, isProperty = false) {
 
 loadMatch();
 
+async function loadMatchShortNews() {
+  try {
+    const res = await fetch(`/api/matches/${matchId}/news`);
+    if (!res.ok) return;
+    const items = await res.json();
+    if (!items.length) return;
+
+    const container = document.getElementById('match-short-news');
+    const list = document.getElementById('match-short-news-list');
+    const lang = document.documentElement.lang || localStorage.getItem('lang') || 'en';
+
+    list.innerHTML = items.map(item => {
+      const isAr = lang === 'ar';
+      const title = isAr && item.title_ar ? item.title_ar : (item.title_en || item.title_ar || '');
+      const dir = /[\u0600-\u06FF]/.test(title) ? 'rtl' : 'ltr';
+      return `<li class="match-short-news-item" dir="${dir}">${title}</li>`;
+    }).join('');
+
+    container.style.display = 'flex';
+  } catch (e) { /* silent */ }
+}
+
+loadMatchShortNews();
+
 // ─── Countdown Logic ──────────────────────────────────────────────────────────
 let countdownInterval = null;
 
