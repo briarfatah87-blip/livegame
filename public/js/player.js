@@ -20,7 +20,7 @@ async function loadMatch() {
     if (matchData.status === 'upcoming') {
       showCountdown(matchData);
     } else {
-      initPlayer(matchData.stream_url, matchData.iframe_url);
+      initPlayer(matchData.stream_url);
     }
   } catch (e) {
     showOverlay(t('player.errorLoadingMatch'), true);
@@ -121,6 +121,16 @@ function applyMatchInfo(m) {
       lineupEl.style.display = 'flex';
     }
   }
+
+  // Standings / Rankings Iframe
+  if (m.iframe_url) {
+    const standingsEl = document.getElementById('match-standings');
+    const standingsBody = document.getElementById('match-standings-body');
+    if (standingsEl && standingsBody) {
+      applyEmbedToIframe(standingsBody, m.iframe_url);
+      standingsEl.style.display = 'flex';
+    }
+  }
 }
 
 // ─── Player ───────────────────────────────────────────────────────────────────
@@ -171,6 +181,16 @@ function decodeEmbedValue(rawValue) {
 function applyEmbedToIframe(iframe, rawValue) {
   const value = decodeEmbedValue(rawValue);
   if (!value) return false;
+  if (iframe.tagName !== 'IFRAME') {
+    // If the target is a div container, inject the iframe HTML or create an iframe
+    const isIframeCode = /<iframe[\s\S]*?>/i.test(value);
+    if (isIframeCode) {
+      iframe.innerHTML = value.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
+    } else {
+      iframe.innerHTML = `<iframe src="${value}" frameborder="0" allowfullscreen style="width:100%;min-height:300px;border-radius:10px;"></iframe>`;
+    }
+    return true;
+  }
 
   const isIframeCode = /<iframe[\s\S]*?>/i.test(value);
   if (isIframeCode) {
@@ -187,21 +207,9 @@ function applyEmbedToIframe(iframe, rawValue) {
   return true;
 }
 
-function initPlayer(streamUrl, iframeUrl) {
+function initPlayer(streamUrl) {
   const video = document.getElementById('video-player');
   const iframe = document.getElementById('iframe-player');
-
-  // Prefer dedicated iframe_url if provided
-  if (iframeUrl) {
-    console.log('[Player] Using dedicated iframe_url');
-    video.classList.add('hidden');
-    iframe.classList.remove('hidden');
-    document.getElementById('p2p-stats-bar').style.display = 'none';
-    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation');
-    applyEmbedToIframe(iframe, iframeUrl);
-    document.getElementById('player-overlay').classList.add('hidden');
-    return;
-  }
 
   if (!streamUrl) {
     if (matchData && matchData.status === 'upcoming') {
