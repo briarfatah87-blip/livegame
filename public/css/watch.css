@@ -160,6 +160,11 @@
   transform: scale(1.1);
 }
 
+#player-play-btn {
+  border: none;
+  outline: none;
+}
+
 .hidden { display: none !important; }
 
 #iframe-player {

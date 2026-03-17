@@ -138,6 +138,8 @@ let hls = null;
 let totalP2PBytes = 0;
 let totalCDNBytes = 0;
 let intervalId = null;
+let mediaRecoveryAttempts = 0;
+let networkRecoveryAttempts = 0;
 
 function showOverlay(text, isError = false) {
   const overlay = document.getElementById('player-overlay');
@@ -151,6 +153,50 @@ function showOverlay(text, isError = false) {
 
 function hideOverlay() {
   document.getElementById('player-overlay').classList.add('hidden');
+}
+
+function showPlayButton(video, message) {
+  const text = message || 'Tap to play stream';
+  const overlayText = document.getElementById('overlay-text');
+  const overlay = document.getElementById('player-overlay');
+  if (!overlayText || !overlay) return;
+
+  overlay.classList.remove('hidden');
+  overlayText.innerHTML = `
+    <div class="player-loading-text" style="text-align:center;">
+      <div style="margin-bottom:10px;">${text}</div>
+      <button id="player-play-btn" class="play-btn-big" style="margin:0 auto;">▶</button>
+    </div>
+  `;
+
+  const btn = document.getElementById('player-play-btn');
+  if (!btn) return;
+  btn.addEventListener('click', async () => {
+    try {
+      video.muted = false;
+      await video.play();
+      hideOverlay();
+    } catch (e) {
+      video.muted = true;
+      try {
+        await video.play();
+        hideOverlay();
+      } catch (err) {
+        showOverlay('Unable to autoplay. Please tap again.', true);
+      }
+    }
+  }, { once: true });
+}
+
+async function tryAutoPlay(video) {
+  try {
+    // Firefox/Chrome often require muted autoplay first.
+    video.muted = true;
+    await video.play();
+    hideOverlay();
+  } catch (e) {
+    showPlayButton(video, 'Autoplay blocked by browser. Tap play.');
+  }
 }
 
 function formatBytes(bytes) {
@@ -282,14 +328,15 @@ function initPlayer(streamUrl) {
 
   // Init hls.js (with or without P2P)
   if (Hls.isSupported()) {
+    mediaRecoveryAttempts = 0;
+    networkRecoveryAttempts = 0;
     hls = new Hls(hlsConfig || {});
     if (engine) engine.bindHls(hls);
     hls.loadSource(streamUrl);
     hls.attachMedia(video);
 
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
-      hideOverlay();
-      video.play().catch(() => { });
+      tryAutoPlay(video);
     });
 
     hls.on(Hls.Events.ERROR, (event, data) => {
@@ -297,10 +344,24 @@ function initPlayer(streamUrl) {
         switch (data.type) {
           case Hls.ErrorTypes.NETWORK_ERROR:
             showOverlay(t('watch.networkError'), false);
-            hls.startLoad();
+            networkRecoveryAttempts += 1;
+            if (networkRecoveryAttempts <= 3) {
+              hls.startLoad();
+            } else {
+              showOverlay('Network unstable. Please refresh stream.', true);
+            }
             break;
           case Hls.ErrorTypes.MEDIA_ERROR:
-            hls.recoverMediaError();
+            mediaRecoveryAttempts += 1;
+            if (mediaRecoveryAttempts <= 2) {
+              hls.recoverMediaError();
+            } else if (mediaRecoveryAttempts <= 4) {
+              hls.swapAudioCodec();
+              hls.recoverMediaError();
+            } else {
+              showOverlay('Media error. Tap play to retry.', true);
+              showPlayButton(video, 'Media stalled. Tap play to continue.');
+            }
             break;
           default:
             showOverlay(t('watch.streamError'), true);
@@ -315,7 +376,7 @@ function initPlayer(streamUrl) {
     // Safari native HLS
     video.src = streamUrl;
     video.addEventListener('loadedmetadata', () => hideOverlay());
-    video.play().catch(() => { });
+    tryAutoPlay(video);
   } else {
     showOverlay(t('watch.browserNoHls'), true);
   }
