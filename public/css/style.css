@@ -680,6 +680,13 @@ input, textarea { font-family: var(--font); }
   white-space: pre-wrap;
   flex: 1;
 }
+.match-lineup-body iframe {
+  width: 100%;
+  min-height: 320px;
+  border: 0;
+  border-radius: 10px;
+  background: #000;
+}
 
 /* ─── Admin Match News Items ────────────────────────────────────────────────── */
 .match-news-item {

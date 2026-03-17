@@ -22,10 +22,12 @@ let deferredPrompt;
 const installBtn = document.getElementById('pwa-install-btn');
 
 // Enhanced standalone mode detection
-const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
-                   window.matchMedia('(display-mode: fullscreen)').matches ||
-                   window.matchMedia('(display-mode: minimal-ui)').matches ||
-                   navigator.standalone;
+const isStandalone = !!(
+  window.matchMedia('(display-mode: standalone)').matches ||
+  window.matchMedia('(display-mode: fullscreen)').matches ||
+  window.matchMedia('(display-mode: minimal-ui)').matches ||
+  navigator.standalone
+);
 
 function showAnimatedPwaSplash() {
   const fromPwaStart = new URLSearchParams(window.location.search).get('source') === 'pwa';

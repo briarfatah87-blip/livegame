@@ -1,4 +1,4 @@
-const CACHE_NAME = 'livegame-cache-v2';
+const CACHE_NAME = 'livegame-cache-v3';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -33,7 +33,24 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    fetch(event.request).catch(() => caches.match(event.request))
-  );
+  // Only handle GET requests; let others pass through.
+  if (event.request.method !== 'GET') return;
+
+  const reqUrl = new URL(event.request.url);
+  const isSameOrigin = reqUrl.origin === self.location.origin;
+
+  event.respondWith((async () => {
+    try {
+      // Always try network first.
+      return await fetch(event.request);
+    } catch (err) {
+      // For same-origin files, fallback to cache if available.
+      if (isSameOrigin) {
+        const cached = await caches.match(event.request);
+        if (cached) return cached;
+      }
+      // Ensure a valid Response is always returned.
+      return Response.error();
+    }
+  })());
 });

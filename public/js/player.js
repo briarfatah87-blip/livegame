@@ -33,7 +33,7 @@ function applyMatchInfo(m) {
   const defaultTitle = `${m.team_home} vs ${m.team_away} - LiveGame`;
   const seoDesc = m.seo_description || `Watch live ${m.team_home} vs ${m.team_away} stream with P2P technology and real-time live chat.`;
   
-  document.title = m.seo_description || defaultTitle;
+  document.title = defaultTitle;
   
   // Update Meta Tags
   updateMeta('description', seoDesc);
@@ -111,7 +111,13 @@ function applyMatchInfo(m) {
     const lineupEl = document.getElementById('match-lineup');
     const lineupBody = document.getElementById('match-lineup-body');
     if (lineupEl && lineupBody) {
-      lineupBody.textContent = m.lineup;
+      const decodedLineup = decodeEmbedValue(m.lineup);
+      if (/<iframe[\s\S]*?>/i.test(decodedLineup)) {
+        // Render iframe embeds if admin pasted embed code here.
+        lineupBody.innerHTML = decodedLineup.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
+      } else {
+        lineupBody.textContent = m.lineup;
+      }
       lineupEl.style.display = 'flex';
     }
   }
@@ -143,6 +149,44 @@ function formatBytes(bytes) {
   return (bytes / 1024 / 1024).toFixed(2) + ' MB/s';
 }
 
+function decodeHtmlEntities(value) {
+  const txt = document.createElement('textarea');
+  txt.innerHTML = String(value || '');
+  return txt.value;
+}
+
+function decodeEmbedValue(rawValue) {
+  let value = decodeHtmlEntities(rawValue).trim();
+  // Handle values stored as URL-encoded iframe HTML (e.g. %3Ciframe ... %3E)
+  if (/%3Ciframe/i.test(value) || /%3Cdiv/i.test(value)) {
+    try {
+      value = decodeURIComponent(value);
+    } catch (e) {
+      // Keep original if malformed encoding
+    }
+  }
+  return value;
+}
+
+function applyEmbedToIframe(iframe, rawValue) {
+  const value = decodeEmbedValue(rawValue);
+  if (!value) return false;
+
+  const isIframeCode = /<iframe[\s\S]*?>/i.test(value);
+  if (isIframeCode) {
+    const srcMatch = value.match(/src=["'](.*?)["']/i);
+    if (srcMatch && srcMatch[1]) {
+      iframe.src = srcMatch[1];
+    } else {
+      iframe.srcdoc = value;
+    }
+    return true;
+  }
+
+  iframe.src = value;
+  return true;
+}
+
 function initPlayer(streamUrl, iframeUrl) {
   const video = document.getElementById('video-player');
   const iframe = document.getElementById('iframe-player');
@@ -154,7 +198,7 @@ function initPlayer(streamUrl, iframeUrl) {
     iframe.classList.remove('hidden');
     document.getElementById('p2p-stats-bar').style.display = 'none';
     iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation');
-    iframe.src = iframeUrl;
+    applyEmbedToIframe(iframe, iframeUrl);
     document.getElementById('player-overlay').classList.add('hidden');
     return;
   }
@@ -181,17 +225,7 @@ function initPlayer(streamUrl, iframeUrl) {
     // allow-popups is OMITTED to block ad tabs
     iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation');
 
-    if (isIframeCode) {
-      // Extract src if possible, or attempt to set as srcdoc
-      const srcMatch = streamUrl.match(/src=["'](.*?)["']/);
-      if (srcMatch && srcMatch[1]) {
-        iframe.src = srcMatch[1];
-      } else {
-        iframe.srcdoc = streamUrl;
-      }
-    } else {
-      iframe.src = streamUrl;
-    }
+    applyEmbedToIframe(iframe, streamUrl);
 
     hideOverlay();
     return;
