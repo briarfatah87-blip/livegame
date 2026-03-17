@@ -1,0 +1,10 @@
+#EXTM3U
+#EXT-X-VERSION:3
+# Test playlist hosted on your domain for player verification.
+# Source variants come from Mux demo stream.
+
+#EXT-X-STREAM-INF:BANDWIDTH=836280,RESOLUTION=848x480,CODECS="mp4a.40.2,avc1.64001f",NAME="480"
+https://test-streams.mux.dev/x36xhzz/url_6/193039199_mp4_h264_aac_hq_7.m3u8
+
+#EXT-X-STREAM-INF:BANDWIDTH=2149280,RESOLUTION=1280x720,CODECS="mp4a.40.2,avc1.64001f",NAME="720"
+https://test-streams.mux.dev/x36xhzz/url_0/193039199_mp4_h264_aac_hd_7.m3u8
