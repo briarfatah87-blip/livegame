@@ -343,29 +343,44 @@ function updateMeta(name, content, isProperty = false) {
 
 loadMatch();
 
+let _matchNewsItems = [];
+
 async function loadMatchShortNews() {
   try {
     const res = await fetch(`/api/matches/${matchId}/news`);
     if (!res.ok) return;
-    const items = await res.json();
-    if (!items.length) return;
-
-    const container = document.getElementById('match-short-news');
-    const list = document.getElementById('match-short-news-list');
-    const lang = document.documentElement.lang || localStorage.getItem('lang') || 'en';
-
-    list.innerHTML = items.map(item => {
-      const isAr = lang === 'ar';
-      const title = isAr && item.title_ar ? item.title_ar : (item.title_en || item.title_ar || '');
-      const dir = /[\u0600-\u06FF]/.test(title) ? 'rtl' : 'ltr';
-      return `<li class="match-short-news-item" dir="${dir}">${title}</li>`;
-    }).join('');
-
-    container.style.display = 'flex';
+    _matchNewsItems = await res.json();
+    renderMatchShortNews();
   } catch (e) { /* silent */ }
 }
 
+function renderMatchShortNews() {
+  if (!_matchNewsItems.length) return;
+  const container = document.getElementById('match-short-news');
+  const list = document.getElementById('match-short-news-list');
+  const lang = window.__lang || localStorage.getItem('lang') || 'en';
+  const isAr = lang === 'ar';
+
+  list.innerHTML = _matchNewsItems.map(item => {
+    const title = isAr
+      ? (item.title_ar || item.title_en || '')
+      : (item.title_en || item.title_ar || '');
+    if (!title) return '';
+    const dir = /[\u0600-\u06FF]/.test(title) ? 'rtl' : 'ltr';
+    return `<li class="match-short-news-item" dir="${dir}">${title}</li>`;
+  }).join('');
+
+  container.style.display = 'flex';
+}
+
 loadMatchShortNews();
+
+// Re-render news when language is toggled
+const _origToggleLang = window.toggleLang;
+window.toggleLang = function () {
+  if (_origToggleLang) _origToggleLang();
+  renderMatchShortNews();
+};
 
 // ─── Countdown Logic ──────────────────────────────────────────────────────────
 let countdownInterval = null;
