@@ -14,13 +14,16 @@ function getCompetitionIcon(competition) {
   return `<svg viewBox="0 0 24 24" class="icon icon-sm" style="margin-right:6px;"><circle cx="12" cy="12" r="10"></circle><path d="m12 12-3.5 1.5L7 10l3-2.5L13.5 9l-1.5 3z"></path><path d="M12 2v5.5"></path><path d="M12 22v-5.5"></path><path d="M22 12h-5.5"></path><path d="M2 12h5.5"></path><path d="m7 10-3-1.5"></path><path d="m17 10 3-1.5"></path><path d="m7 14-3 1.5"></path><path d="m17 14 3-1.5"></path></svg>`;
 }
 
-function formatTime(isoString, forCard = true) {
+function formatTime(isoString) {
   const d = new Date(isoString);
   const locale = window.__lang === 'ar' ? 'ar' : [];
-  if (forCard) {
-    return d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
-  }
-  return d.toLocaleString(locale, { dateStyle: 'medium', timeStyle: 'short' });
+  return d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
+}
+
+function formatDate(isoString) {
+  const d = new Date(isoString);
+  const locale = window.__lang === 'ar' ? 'ar' : [];
+  return d.toLocaleDateString(locale, { day: 'numeric', month: 'short' });
 }
 
 function teamLogoHtml(logo, name) {
@@ -48,7 +51,7 @@ function renderMatchCard(match) {
         <span class="score-sep">:</span>
         <span class="score-num">${match.score_away}</span>
       </div>`
-    : `<div class="match-time">${formatTime(match.start_time)}</div>`;
+    : `<div class="match-time">${formatDate(match.start_time)}</div>`;
 
   const watchBtn = isLive
     ? `<button class="watch-btn live-btn">${t('card.watchLive')}</button>`
