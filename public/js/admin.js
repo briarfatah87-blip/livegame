@@ -331,7 +331,6 @@ function resetForm() {
     document.getElementById(id).value = '';
   });
   document.getElementById('f-lineup').value = '';
-  });
   document.getElementById('f-status').value = 'upcoming';
   document.getElementById('f-score-home').value = 0;
   document.getElementById('f-score-away').value = 0;
