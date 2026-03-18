@@ -99,7 +99,7 @@ app.get('/api/hls-proxy', async (req, res) => {
     }
 
     const contentType = upstream.headers.get('content-type') || '';
-    const isPlaylist = /mpegurl|x-mpegurl|application\/vnd\.apple\.mpegurl|\.m3u8/i.test(contentType) || target.pathname.endsWith('.m3u8');
+    const isPlaylist = /mpegurl|x-mpegurl|application\/vnd\.apple\.mpegurl|\.m3u8?/i.test(contentType) || target.pathname.match(/\.m3u8?$/i);
 
     if (isPlaylist) {
       const playlist = await upstream.text();

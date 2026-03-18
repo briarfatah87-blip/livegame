@@ -262,7 +262,7 @@ function applyEmbedToIframe(iframe, rawValue) {
 function getPlayableHlsSource(streamUrl) {
   try {
     const u = new URL(streamUrl, window.location.origin);
-    const isM3u = /\.m3u8(\?|$)/i.test(u.pathname + u.search);
+    const isM3u = /\.m3u8?(\?|$)/i.test(u.pathname + u.search);
     const isExternal = u.origin !== window.location.origin;
 
     if (isM3u && isExternal) {
@@ -289,7 +289,7 @@ function initPlayer(streamUrl) {
 
   // Detect if streamUrl is an iframe code or just a URL that needs an iframe
   const isIframeCode = streamUrl.toLowerCase().includes('<iframe');
-  const isHls = streamUrl.toLowerCase().includes('.m3u8') || streamUrl.toLowerCase().includes('.mpd');
+  const isHls = streamUrl.toLowerCase().includes('.m3u8') || streamUrl.toLowerCase().includes('.m3u') || streamUrl.toLowerCase().includes('.mpd');
 
   if (isIframeCode || !isHls) {
     console.log('[Player] Using Iframe mode');
