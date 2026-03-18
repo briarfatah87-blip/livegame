@@ -135,8 +135,6 @@ function applyMatchInfo(m) {
 
 // ─── Player ───────────────────────────────────────────────────────────────────
 let hls = null;
-let totalP2PBytes = 0;
-let totalCDNBytes = 0;
 let intervalId = null;
 let mediaRecoveryAttempts = 0;
 let networkRecoveryAttempts = 0;
@@ -314,48 +312,16 @@ function initPlayer(streamUrl) {
   const playableSource = getPlayableHlsSource(streamUrl);
   
 
-  showOverlay(t('watch.initP2P'));
+  showOverlay(t('watch.loading'));
 
-  // Try p2p-media-loader first, fall back to plain hls.js
-  let engine = null;
-  let hlsConfig = {};
-
-  try {
-    if (window.HlsJsP2PEngine) {
-      engine = new HlsJsP2PEngine.Engine({
-        segments: {
-          swarmId: `livegame-match-${matchId}`,
-        }
-      });
-
-      hlsConfig = HlsJsP2PEngine.Engine.injectMixin({
-        // hls.js config
-        enableWorker: true,
-        lowLatencyMode: true,
-      });
-
-      engine.addEventListener('onPeerConnect', () => updatePeerCount(engine));
-      engine.addEventListener('onPeerClose', () => updatePeerCount(engine));
-      engine.addEventListener('onChunkDownloaded', (e) => {
-        if (e.detail?.downloadSource === 'p2p') {
-          totalP2PBytes += e.detail.bytesLength || 0;
-        } else {
-          totalCDNBytes += e.detail?.bytesLength || 0;
-        }
-        updateP2PStats();
-      });
-      console.log('[P2P] Engine initialized');
-    }
-  } catch (err) {
-    console.warn('[P2P] Engine init failed, using plain hls.js:', err);
-  }
-
-  // Init hls.js (with or without P2P)
+  // Init plain hls.js
   if (Hls.isSupported()) {
     mediaRecoveryAttempts = 0;
     networkRecoveryAttempts = 0;
-    hls = new Hls(hlsConfig || {});
-    if (engine) engine.bindHls(hls);
+    hls = new Hls({
+      enableWorker: true,
+      lowLatencyMode: true,
+    });
     hls.loadSource(playableSource);
     hls.attachMedia(video);
 
@@ -398,8 +364,7 @@ function initPlayer(streamUrl) {
       }
     });
 
-    // Simulate P2P stats update
-    simulateP2PStats();
+
 
   } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
     // Safari native HLS
@@ -411,42 +376,7 @@ function initPlayer(streamUrl) {
   }
 }
 
-function updatePeerCount(engine) {
-  try {
-    const count = engine.getPeers?.()?.length || 0;
-    document.getElementById('p2p-peers').textContent = count;
-  } catch (e) { }
-}
 
-function updateP2PStats() {
-  const total = totalP2PBytes + totalCDNBytes;
-  const pct = total > 0 ? Math.round((totalP2PBytes / total) * 100) : 0;
-  document.getElementById('p2p-saved').textContent = pct + '%';
-}
-
-// Simulate P2P stats for demo purposes when real events aren't available
-function simulateP2PStats() {
-  let peers = 0;
-  let p2pRate = 0;
-  let upRate = 0;
-
-  setInterval(() => {
-    // Gradual increase to simulate peers joining
-    if (peers < 8) peers += Math.random() > 0.6 ? 1 : 0;
-    if (peers > 0 && Math.random() > 0.85) peers = Math.max(0, peers - 1);
-
-    p2pRate = peers > 0 ? Math.floor(Math.random() * 180 + 60) * 1024 : 0;
-    upRate = peers > 0 ? Math.floor(Math.random() * 80 + 20) * 1024 : 0;
-
-    document.getElementById('p2p-peers').textContent = peers;
-    document.getElementById('p2p-down').textContent = peers > 0 ? formatBytes(p2pRate) : '0 KB/s';
-    document.getElementById('p2p-up').textContent = peers > 0 ? formatBytes(upRate) : '0 KB/s';
-
-    totalP2PBytes += p2pRate / 4;
-    totalCDNBytes += (peers > 0 ? Math.random() * 50000 : Math.random() * 200000);
-    updateP2PStats();
-  }, 2000);
-}
 
 // ─── Share ────────────────────────────────────────────────────────────────────
 function shareMatch() {

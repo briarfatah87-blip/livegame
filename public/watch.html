@@ -110,30 +110,6 @@
           </div>
         </div>
 
-        <!-- P2P Stats Bar -->
-        <div class="p2p-stats-bar" id="p2p-stats-bar">
-          <div class="p2p-stat">
-            <span class="p2p-stat-icon"><svg viewBox="0 0 24 24" class="icon"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg></span>
-            <span class="p2p-stat-value" id="p2p-peers">0</span>
-            <span class="p2p-stat-label" data-i18n="watch.peers">Peers</span>
-          </div>
-          <div class="p2p-stat">
-            <span class="p2p-stat-icon"><svg viewBox="0 0 24 24" class="icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></span>
-            <span class="p2p-stat-value" id="p2p-down">0 KB/s</span>
-            <span class="p2p-stat-label" data-i18n="watch.p2pDownload">P2P Download</span>
-          </div>
-          <div class="p2p-stat">
-            <span class="p2p-stat-icon"><svg viewBox="0 0 24 24" class="icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg></span>
-            <span class="p2p-stat-value" id="p2p-up">0 KB/s</span>
-            <span class="p2p-stat-label" data-i18n="watch.p2pUpload">P2P Upload</span>
-          </div>
-          <div class="p2p-stat">
-            <span class="p2p-stat-icon"><svg viewBox="0 0 24 24" class="icon"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></span>
-            <span class="p2p-stat-value" id="p2p-saved">0%</span>
-            <span class="p2p-stat-label" data-i18n="watch.cdnSaved">CDN Saved</span>
-          </div>
-          <div class="p2p-badge" data-i18n="watch.p2pActive"><svg viewBox="0 0 24 24" class="icon icon-sm" style="margin-right:4px;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> P2P Active</div>
-        </div>
 
         <!-- Score Card -->
         <div class="score-card" id="score-card">
@@ -269,11 +245,7 @@
 
   <div class="toast-container" id="toast-container"></div>
 
-  <!-- hls.js -->
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
-  <!-- p2p-media-loader core + hlsjs -->
-  <script src="https://cdn.jsdelivr.net/npm/p2p-media-loader-core@latest/build/p2p-media-loader-core.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/p2p-media-loader-hlsjs@latest/build/p2p-media-loader-hlsjs.min.js"></script>
+
   <!-- Socket.IO -->
   <script src="/socket.io/socket.io.js"></script>
 
