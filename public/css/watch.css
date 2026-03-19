@@ -114,6 +114,8 @@
   background: #000;
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--border);
+  --plyr-color-main: var(--accent);
+  --plyr-video-background: #000;
 }
 
 .player-wrapper video {

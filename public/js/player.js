@@ -153,47 +153,15 @@ function hideOverlay() {
   document.getElementById('player-overlay').classList.add('hidden');
 }
 
-function showPlayButton(video, message) {
-  const text = message || 'Tap to play stream';
-  const overlayText = document.getElementById('overlay-text');
-  const overlay = document.getElementById('player-overlay');
-  if (!overlayText || !overlay) return;
 
-  overlay.classList.remove('hidden');
-  overlayText.innerHTML = `
-    <div class="player-loading-text" style="text-align:center;">
-      <div style="margin-bottom:10px;">${text}</div>
-      <button id="player-play-btn" class="play-btn-big" style="margin:0 auto;">▶</button>
-    </div>
-  `;
-
-  const btn = document.getElementById('player-play-btn');
-  if (!btn) return;
-  btn.addEventListener('click', async () => {
-    try {
-      video.muted = false;
-      await video.play();
-      hideOverlay();
-    } catch (e) {
-      video.muted = true;
-      try {
-        await video.play();
-        hideOverlay();
-      } catch (err) {
-        showOverlay('Unable to autoplay. Please tap again.', true);
-      }
-    }
-  }, { once: true });
-}
 
 async function tryAutoPlay(video) {
+  hideOverlay();
   try {
-    // Firefox/Chrome often require muted autoplay first.
     video.muted = true;
     await video.play();
-    hideOverlay();
   } catch (e) {
-    showPlayButton(video, 'Autoplay blocked by browser. Tap play.');
+    // Autoplay blocked. The premium player UI will wait for user interaction natively.
   }
 }
 
@@ -312,7 +280,8 @@ function initPlayer(streamUrl) {
   const playableSource = getPlayableHlsSource(streamUrl);
   
 
-  showOverlay(t('watch.loading'));
+  // Hide custom overlay so Plyr's native skin is visible immediately
+  hideOverlay();
 
   // Init plain hls.js
   if (Hls.isSupported()) {
@@ -321,12 +290,54 @@ function initPlayer(streamUrl) {
     hls = new Hls({
       enableWorker: true,
       lowLatencyMode: true,
+      maxBufferLength: 60,
+      maxMaxBufferLength: 600,
     });
     hls.loadSource(playableSource);
     hls.attachMedia(video);
 
-    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-      tryAutoPlay(video);
+    // Initial Plyr Options
+    const defaultOptions = {
+        controls: [
+          'play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'
+        ],
+        settings: ['quality', 'speed'],
+    };
+
+    hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+      // Create quality levels for Plyr
+      if (data.levels && data.levels.length > 0) {
+        const availableQualities = data.levels.map(l => l.height).sort((a,b) => b-a);
+        availableQualities.unshift(0); // 0 translates to Auto
+        
+        defaultOptions.quality = {
+          default: 0,
+          options: availableQualities,
+          forced: true,
+          onChange: (newQuality) => {
+            if (newQuality === 0) {
+              hls.currentLevel = -1; // Auto
+            } else {
+              hls.levels.forEach((level, levelIndex) => {
+                if (level.height === newQuality) {
+                  hls.currentLevel = levelIndex;
+                }
+              });
+            }
+          }
+        };
+        defaultOptions.i18n = {
+          qualityLabel: { 0: 'Auto' }
+        };
+      }
+
+      // Init Plyr Player
+      const player = new Plyr(video, defaultOptions);
+      window.player = player;
+
+      player.on('ready', () => {
+         tryAutoPlay(video);
+      });
     });
 
     hls.on(Hls.Events.ERROR, (event, data) => {
@@ -354,7 +365,7 @@ function initPlayer(streamUrl) {
               hls.recoverMediaError();
             } else {
               showOverlay('Media error. Tap play to retry.', true);
-              showPlayButton(video, 'Media stalled. Tap play to continue.');
+              showOverlay('Media error. Please reload the page.', true);
             }
             break;
           default:
@@ -369,8 +380,17 @@ function initPlayer(streamUrl) {
   } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
     // Safari native HLS
     video.src = playableSource;
-    video.addEventListener('loadedmetadata', () => hideOverlay());
-    tryAutoPlay(video);
+    const player = new Plyr(video, {
+        controls: [
+          'play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'
+        ],
+        settings: ['speed'],
+    });
+    window.player = player;
+    video.addEventListener('loadedmetadata', () => {
+      hideOverlay();
+      tryAutoPlay(video);
+    });
   } else {
     showOverlay(t('watch.browserNoHls'), true);
   }
