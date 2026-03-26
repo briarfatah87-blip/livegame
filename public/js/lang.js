@@ -4,11 +4,13 @@
     en: {
       // Navbar
       "nav.home": "Home",
+      "nav.news": "News",
       "nav.schedule": "Schedule",
       "nav.admin": "Admin",
       "nav.installApp": "Install App",
       "nav.theme": "Theme",
       "nav.language": "Language",
+      "site.name": 'Koora<span>Live</span>',
 
       // Hero
       "hero.tag": "P2P Powered Streaming",
@@ -42,7 +44,7 @@
       "footer.home": "Home",
       "footer.schedule": "Schedule",
       "footer.admin": "Admin",
-      "footer.copy": "© 2024 LiveGame. P2P Streaming Platform.",
+      "footer.copy": "© 2024 Koora Live. P2P Streaming Platform.",
 
       // Watch page
       "watch.back": "← Back",
@@ -64,6 +66,10 @@
       "watch.initP2P": "Initializing P2P engine...",
       "watch.matchStarting": "Match is starting! Connecting to stream...",
       "watch.linkCopied": "Link copied!",
+      "player.error403": "Stream host returned 403 Forbidden. Check source server hotlink/referrer rules.",
+      "player.networkUnstable": "Network unstable. Please refresh stream.",
+      "player.mediaErrorRetry": "Media error. Tap play to retry.",
+      "player.mediaErrorReload": "Media error. Please reload the page.",
 
       // Chat
       "chat.title": "Live Chat",
@@ -175,16 +181,71 @@
       "player.errorLoadingMatch": "Error loading match info",
       "player.copyManually": "Copy manually: ",
       "home.failedLoadMatches": "Failed to load matches",
+
+      // News page
+      "news.title": "Latest News",
+      "news.subtitle": "All football updates and match stories in one place.",
+      "news.noNews": "No news available yet.",
+      "news.backToAll": "← Back To All News",
+      "news.openSource": "Open Source Link",
+      "news.notFound": "News item not found.",
+      "news.fontIncrease": "Increase Font",
+      "news.fontDecrease": "Decrease Font",
+      "section.viewAllNews": "View All →",
+
+      // More Admin
+      "admin.matchNews": "Match Short News",
+      "admin.newsTitleEn": "Title (English)",
+      "admin.newsTitleAr": "Title (Arabic)",
+      "admin.add": "Add",
+      "admin.addNews": "Add News",
+      "admin.editNews": "Edit News",
+      "admin.saveNews": "Save News",
+      "admin.updateNews": "Update News",
+      "admin.newsTitle": "Title *",
+      "admin.summary": "Summary",
+      "admin.imageUrl": "Image URL",
+      "admin.linkUrl": "Link URL (optional)",
+      "admin.published": "Published",
+      "admin.yes": "Yes",
+      "admin.no": "No",
+      "admin.reset": "Reset",
+      "admin.created": "Created",
+      "admin.noNewsPosts": "No news posts yet.",
+      "admin.errorLoadingNews": "Failed to load news.",
+      "admin.newsSaved": "News created.",
+      "admin.newsUpdated": "News updated.",
+      "admin.newsDeleted": "News deleted.",
+      "admin.errorSavingNews": "Failed to save news.",
+      "admin.deleteNewsConfirm": "Delete this news item?",
+      "admin.matchNewsNoItems": "No short news yet.",
+      "admin.matchNewsEnterTitle": "Enter at least one title",
+      "admin.matchNewsAdded": "News added",
+      "admin.matchNewsDeleted": "Deleted",
+      "admin.matchNewsDeleteConfirm": "Delete this news item?",
+      "admin.lineupPlaceholder": "Paste lineup iframe embeds here, e.g. <iframe ...></iframe>",
+      "watch.lineup": "Lineup",
+      "section.latestNews": "Latest News",
+      "nav.live": "LIVE",
+      "Premier League": "Premier League",
+      "La Liga": "La Liga",
+      "Champions League": "Champions League",
+      "Serie A": "Serie A",
+      "Bundesliga": "Bundesliga",
+      "Europa League": "Europa League",
+      "Ligue 1": "Ligue 1",
     },
 
     ar: {
       // Navbar
       "nav.home": "الرئيسية",
+      "nav.news": "الأخبار",
       "nav.schedule": "الجدول",
       "nav.admin": "الإدارة",
       "nav.installApp": "تثبيت التطبيق",
       "nav.theme": "المظهر",
       "nav.language": "اللغة",
+      "site.name": 'كورة<span>لايف</span>',
 
       // Hero
       "hero.tag": "بث مدعوم بتقنية P2P",
@@ -218,7 +279,7 @@
       "footer.home": "الرئيسية",
       "footer.schedule": "الجدول",
       "footer.admin": "الإدارة",
-      "footer.copy": "© 2024 LiveGame. منصة البث P2P.",
+      "footer.copy": "© 2024 كورة لايف. منصة البث P2P.",
 
       // Watch page
       "watch.back": "← رجوع",
@@ -240,6 +301,10 @@
       "watch.initP2P": "جاری تهيئة محرك P2P...",
       "watch.matchStarting": "المباراة تبدأ! جاري الاتصال بالبث...",
       "watch.linkCopied": "تم نسخ الرابط!",
+      "player.error403": "أرجع خادم البث خطأ 403 (غير مسموح). تحقق من قواعد الارتباط المباشر.",
+      "player.networkUnstable": "الشبكة غير مستقرة. يرجى تحديث البث.",
+      "player.mediaErrorRetry": "خطأ في الوسائط. اضغط على تشغيل للمحاولة مرة أخرى.",
+      "player.mediaErrorReload": "خطأ في الوسائط. يرجى إعادة تحميل الصفحة.",
 
       // Chat
       "chat.title": "الدردشة المباشرة",
@@ -351,11 +416,64 @@
       "player.errorLoadingMatch": "خطأ في تحميل معلومات المباراة",
       "player.copyManually": "انسخ يدوياً: ",
       "home.failedLoadMatches": "فشل تحميل المباريات",
+
+      // News page
+      "news.title": "آخر الأخبار",
+      "news.subtitle": "جميع تحديثات كرة القدم وقصص المباريات في مكان واحد.",
+      "news.noNews": "لا توجد أخبار متاحة بعد.",
+      "news.backToAll": "← العودة إلى جميع الأخبار",
+      "news.openSource": "فتح رابط المصدر",
+      "news.notFound": "لم يتم العثور على الخبر.",
+      "news.fontIncrease": "تكبير الخط",
+      "news.fontDecrease": "تصغير الخط",
+      "section.viewAllNews": "عرض الكل ←",
+
+      // More Admin
+      "admin.matchNews": "أخبار المباراة المختصرة",
+      "admin.newsTitleEn": "العنوان (إنجليزي)",
+      "admin.newsTitleAr": "العنوان (عربي)",
+      "admin.add": "إضافة",
+      "admin.addNews": "إضافة خبر",
+      "admin.editNews": "تعديل الخبر",
+      "admin.saveNews": "حفظ الخبر",
+      "admin.updateNews": "تحديث الخبر",
+      "admin.newsTitle": "العنوان *",
+      "admin.summary": "الملخص",
+      "admin.imageUrl": "رابط الصورة",
+      "admin.linkUrl": "رابط المصدر (اختياري)",
+      "admin.published": "منشور",
+      "admin.yes": "نعم",
+      "admin.no": "لا",
+      "admin.reset": "إعادة تعيين",
+      "admin.created": "تم الإنشاء",
+      "admin.noNewsPosts": "لا توجد منشورات إخبارية بعد.",
+      "admin.errorLoadingNews": "فشل تحميل الأخبار.",
+      "admin.newsSaved": "تم إنشاء الخبر.",
+      "admin.newsUpdated": "تم تحديث الخبر.",
+      "admin.newsDeleted": "تم حذف الخبر.",
+      "admin.errorSavingNews": "فشل حفظ الخبر.",
+      "admin.deleteNewsConfirm": "هل تريد حذف هذا الخبر؟",
+      "admin.matchNewsNoItems": "لا توجد أخبار مختصرة بعد.",
+      "admin.matchNewsEnterTitle": "أدخل عنواناً واحداً على الأقل",
+      "admin.matchNewsAdded": "تمت إضافة الخبر",
+      "admin.matchNewsDeleted": "تم الحذف",
+      "admin.matchNewsDeleteConfirm": "حذف هذا الخبر؟",
+      "admin.lineupPlaceholder": "الصق كود التشكيلة هنا، مثال: <iframe ...></iframe>",
+      "watch.lineup": "التشكيلة",
+      "section.latestNews": "آخر الأخبار",
+      "nav.live": "مباشر",
+      "Premier League": "الدوري الإنجليزي",
+      "La Liga": "الدوري الإسباني",
+      "Champions League": "دوري أبطال أوروبا",
+      "Serie A": "الدوري الإيطالي",
+      "Bundesliga": "الدوري الألماني",
+      "Europa League": "الدوري الأوروبي",
+      "Ligue 1": "الدوري الفرنسي",
     }
   };
 
-  // Get saved language or default to English
-  const savedLang = localStorage.getItem('lang') || 'en';
+  // Get saved language or default to Arabic
+  const savedLang = localStorage.getItem('lang') || 'ar';
   document.documentElement.setAttribute('lang', savedLang);
   if (savedLang === 'ar') document.documentElement.setAttribute('dir', 'rtl');
 

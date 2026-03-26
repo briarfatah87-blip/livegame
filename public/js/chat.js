@@ -51,7 +51,18 @@ function showChatInput() {
 
 // ─── Socket.IO ────────────────────────────────────────────────────────────────
 function connectSocket() {
-  socket = io();
+  if (socket && socket.connected) return;
+  if (socket) {
+    socket.connect();
+    return;
+  }
+
+  socket = io({
+    transports: ['websocket', 'polling'], // Prioritize WebSocket
+    reconnection: true,
+    reconnectionAttempts: 10,
+    reconnectionDelay: 2000
+  });
 
   socket.on('connect', () => {
     socket.emit('join_match', { matchId: chatMatchId, username: chatUsername });
@@ -105,10 +116,10 @@ function connectSocket() {
     }
   });
 
-  socket.on('disconnect', () => {
-    setTimeout(() => {
-      if (socket) socket.connect();
-    }, 3000);
+  socket.on('disconnect', (reason) => {
+    console.log('[Socket] Disconnected:', reason);
+    // Socket.io handles automatic reconnection by default.
+    // Manual socket.connect() calls here can cause duplicate connections.
   });
 }
 

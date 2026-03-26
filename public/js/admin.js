@@ -113,6 +113,8 @@ function showPanel(panel, skipReset = false) {
   }
   if (panel === 'news') {
     resetNewsForm();
+    document.getElementById('news-form-title').textContent = t('admin.addNews');
+    document.getElementById('submit-news-btn').textContent = t('admin.saveNews');
     loadNewsTable();
   }
   if (panel === 'bans') loadBansTable();
@@ -140,7 +142,7 @@ async function loadMatchesTable() {
           </div>
         </td>
         <td style="font-weight:700;">${m.score_home} — ${m.score_away}</td>
-        <td><div class="status-badge ${m.status}">${m.status.toUpperCase()}</div></td>
+        <td><div class="status-badge ${m.status}">${t('status.' + m.status).toUpperCase()}</div></td>
         <td>${m.competition}</td>
         <td style="font-size:12px;color:var(--text-muted);">${new Date(m.start_time).toLocaleString([], {dateStyle:'short',timeStyle:'short'})}</td>
         <td>
@@ -195,11 +197,11 @@ async function editMatch(id) {
 
 async function loadMatchNews(matchId) {
   const list = document.getElementById('match-news-list');
-  list.innerHTML = '<div style="color:var(--text-muted);font-size:13px;">Loading...</div>';
+  list.innerHTML = `<div style="color:var(--text-muted);font-size:13px;">${t('admin.loading')}</div>`;
   try {
     const items = await fetchJsonSafe(`/api/matches/${matchId}/news`, { headers: { 'x-admin-token': adminToken } });
     if (!items.length) {
-      list.innerHTML = '<div style="color:var(--text-muted);font-size:13px;">No short news yet.</div>';
+      list.innerHTML = `<div style="color:var(--text-muted);font-size:13px;">${t('admin.matchNewsNoItems')}</div>`;
       return;
     }
     list.innerHTML = items.map(item => `
@@ -228,26 +230,24 @@ async function addMatchNews() {
       headers: { 'Content-Type': 'application/json', 'x-admin-token': adminToken },
       body: JSON.stringify({ title_en: titleEn, title_ar: titleAr })
     });
-    document.getElementById('mn-title-en').value = '';
-    document.getElementById('mn-title-ar').value = '';
-    showToast('News added', 'success');
+    showToast(t('admin.matchNewsAdded'), 'success');
     loadMatchNews(editingMatchId);
   } catch (e) {
-    showToast(e.message || 'Failed to add news', 'error');
+    showToast(e.message || t('admin.errorSavingNews'), 'error');
   }
 }
 
 async function deleteMatchNews(newsId) {
-  if (!confirm('Delete this news item?')) return;
+  if (!confirm(t('admin.matchNewsDeleteConfirm'))) return;
   try {
     await fetchJsonSafe(`/api/admin/match-news/${newsId}`, {
       method: 'DELETE',
       headers: { 'x-admin-token': adminToken }
     });
-    showToast('Deleted', 'success');
+    showToast(t('admin.matchNewsDeleted'), 'success');
     loadMatchNews(editingMatchId);
   } catch (e) {
-    showToast(e.message || 'Failed to delete', 'error');
+    showToast(e.message || t('admin.errorDeleting'), 'error');
   }
 }
 
@@ -347,12 +347,12 @@ async function loadNewsTable() {
   const tbody = document.getElementById('news-tbody');
   if (!tbody) return;
 
-  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr>';
+  tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px;">${t('admin.loading')}</td></tr>`;
   try {
     const rows = await fetchJsonSafe('/api/admin/news', { headers: { 'x-admin-token': adminToken } });
 
     if (!rows.length) {
-      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px;">No news posts yet.</td></tr>';
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px;">${t('admin.noNewsPosts')}</td></tr>`;
       return;
     }
 
@@ -363,18 +363,18 @@ async function loadNewsTable() {
           <div style="font-weight:700;">${escapeHtml(n.title)}</div>
           <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">${escapeHtml((n.summary || '').slice(0, 110))}</div>
         </td>
-        <td><div class="status-badge ${n.is_published ? 'live' : 'finished'}">${n.is_published ? 'YES' : 'NO'}</div></td>
+        <td><div class="status-badge ${n.is_published ? 'live' : 'finished'}">${n.is_published ? t('admin.yes').toUpperCase() : t('admin.no').toUpperCase()}</div></td>
         <td style="font-size:12px;color:var(--text-muted);">${new Date(n.created_at).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</td>
         <td>
           <div class="table-actions">
-            <button class="tbl-btn edit" onclick="editNews(${n.id})">Edit</button>
-            <button class="tbl-btn del" onclick="deleteNews(${n.id})">Delete</button>
+            <button class="tbl-btn edit" onclick="editNews(${n.id})">${t('admin.actions').split(' ')[0]}</button>
+            <button class="tbl-btn del" onclick="deleteNews(${n.id})">${t('admin.action')}</button>
           </div>
         </td>
       </tr>
     `).join('');
   } catch (e) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--red);padding:24px;">Failed to load news.</td></tr>';
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--red);padding:24px;">${t('admin.errorLoadingNews')}</td></tr>`;
   }
 }
 
@@ -393,10 +393,10 @@ async function editNews(id) {
     document.getElementById('n-image').value = news.image_url || '';
     document.getElementById('n-link').value = news.link_url || '';
     document.getElementById('n-published').value = news.is_published ? '1' : '0';
-    document.getElementById('news-form-title').textContent = 'Edit News';
-    document.getElementById('submit-news-btn').textContent = 'Update News';
+    document.getElementById('news-form-title').textContent = t('admin.editNews');
+    document.getElementById('submit-news-btn').textContent = t('admin.updateNews');
   } catch (e) {
-    showToast('Failed to load news item.', 'error');
+    showToast(t('admin.errorLoadingNews'), 'error');
   }
 }
 
@@ -417,7 +417,7 @@ async function submitNews() {
 
   const btn = document.getElementById('submit-news-btn');
   btn.disabled = true;
-  btn.textContent = editingNewsId ? 'Updating...' : 'Saving...';
+  btn.textContent = editingNewsId ? t('admin.saving') : t('admin.saving');
 
   try {
     const url = editingNewsId ? `/api/admin/news/${editingNewsId}` : '/api/admin/news';
@@ -428,28 +428,28 @@ async function submitNews() {
       body: JSON.stringify(payload)
     });
 
-    showToast(editingNewsId ? 'News updated.' : 'News created.', 'success');
+    showToast(editingNewsId ? t('admin.newsUpdated') : t('admin.newsSaved'), 'success');
     resetNewsForm();
     loadNewsTable();
   } catch (e) {
-    showToast(e.message || 'Failed to save news.', 'error');
+    showToast(e.message || t('admin.errorSavingNews'), 'error');
   } finally {
     btn.disabled = false;
-    btn.textContent = editingNewsId ? 'Update News' : 'Save News';
+    btn.textContent = editingNewsId ? t('admin.updateNews') : t('admin.saveNews');
   }
 }
 
 async function deleteNews(id) {
-  if (!confirm('Delete this news item?')) return;
+  if (!confirm(t('admin.deleteNewsConfirm'))) return;
   try {
     await fetchJsonSafe(`/api/admin/news/${id}`, {
       method: 'DELETE',
       headers: { 'x-admin-token': adminToken }
     });
-    showToast('News deleted.', 'success');
+    showToast(t('admin.newsDeleted'), 'success');
     loadNewsTable();
   } catch (e) {
-    showToast('Failed to delete news.', 'error');
+    showToast(t('admin.errorDeleting'), 'error');
   }
 }
 
@@ -461,8 +461,8 @@ function resetNewsForm() {
   document.getElementById('n-image').value = '';
   document.getElementById('n-link').value = '';
   document.getElementById('n-published').value = '1';
-  document.getElementById('news-form-title').textContent = 'Add News';
-  document.getElementById('submit-news-btn').textContent = 'Save News';
+  document.getElementById('news-form-title').textContent = t('admin.addNews');
+  document.getElementById('submit-news-btn').textContent = t('admin.saveNews');
 }
 
 function getNewsSummaryValue() {

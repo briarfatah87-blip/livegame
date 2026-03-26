@@ -62,13 +62,13 @@
       <div class="news-detail-card" dir="auto">
         <div class="news-detail-meta" dir="auto">${formatDate(item.created_at)}</div>
         <div class="news-font-controls">
-          <button class="font-btn" onclick="window.changeFontSize(1)" title="گەورەکردنی فۆنت (Increase Font)">+</button>
-          <button class="font-btn" onclick="window.changeFontSize(-1)" title="بچوککردنی فۆنت (Decrease Font)">-</button>
+          <button class="font-btn" onclick="window.changeFontSize(1)" title="${t('news.fontIncrease')}">+</button>
+          <button class="font-btn" onclick="window.changeFontSize(-1)" title="${t('news.fontDecrease')}">-</button>
         </div>
         <h1 class="news-detail-title" dir="auto">${escapeHtml(item.title)}</h1>
         ${item.image_url ? `<div class="news-detail-image-wrap"><img src="${item.image_url}" alt="${escapeHtml(item.title)}"></div>` : ''}
         <div class="news-detail-body" id="news-detail-content" dir="auto">${nl2br(item.summary || '')}</div>
-        ${item.link_url ? `<a class="btn btn-primary news-source-link" href="${item.link_url}" target="_blank" rel="noopener noreferrer" dir="auto">Open Source Link</a>` : ''}
+        ${item.link_url ? `<a class="btn btn-primary news-source-link" href="${item.link_url}" target="_blank" rel="noopener noreferrer" dir="auto">${t('news.openSource')}</a>` : ''}
       </div>
     `;
   }
@@ -93,7 +93,7 @@
       grid.style.display = 'grid';
       grid.innerHTML = rows.map(renderListCard).join('');
     } catch (err) {
-      showToast('Failed to load news.', 'error');
+      showToast(t('admin.errorLoadingNews'), 'error');
     }
   }
 
@@ -108,7 +108,7 @@
       detail.innerHTML = renderDetail(item);
       document.title = `${item.title} - LiveGame`;
     } catch (err) {
-      detail.innerHTML = '<div class="empty-state"><p>News item not found.</p></div>';
+      detail.innerHTML = `<div class="empty-state"><p>${t('news.notFound')}</p></div>`;
     }
   }
 

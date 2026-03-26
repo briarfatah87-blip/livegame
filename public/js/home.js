@@ -40,9 +40,9 @@ function renderMatchCard(match) {
   const href = isUpcoming || isLive ? `/watch.html?id=${match.id}` : '#';
 
   const statusBadge = isLive
-    ? `<div class="status-badge live"><div class="live-dot"></div>LIVE ${match.minute ? `${match.minute}'` : ''}</div>`
+    ? `<div class="status-badge live"><div class="live-dot"></div>${t('status.live').toUpperCase()} ${match.minute ? `${match.minute}'` : ''}</div>`
     : isFinished
-    ? `<div class="status-badge finished">FT</div>`
+    ? `<div class="status-badge finished">${t('watch.fullTime')}</div>`
     : `<div class="status-badge upcoming"><svg viewBox="0 0 24 24" class="icon icon-sm" style="margin-right:4px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> ${formatTime(match.start_time)}</div>`;
 
   const scoreOrTime = isLive || isFinished
@@ -62,7 +62,7 @@ function renderMatchCard(match) {
   return `
     <a href="${href}" class="match-card ${match.status}">
       <div class="card-header">
-        <div class="competition-badge">${getCompetitionIcon(match.competition)} ${match.competition}</div>
+        <div class="competition-badge">${getCompetitionIcon(match.competition)} ${t(match.competition)}</div>
         ${statusBadge}
       </div>
       <div class="teams-row">

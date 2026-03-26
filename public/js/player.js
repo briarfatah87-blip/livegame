@@ -345,7 +345,7 @@ function initPlayer(streamUrl) {
         switch (data.type) {
           case Hls.ErrorTypes.NETWORK_ERROR:
             if (data?.response?.code === 403) {
-              showOverlay('Stream host returned 403 Forbidden. Check source server hotlink/referrer rules.', true);
+              showOverlay(t('player.error403'), true);
               return;
             }
             showOverlay(t('watch.networkError'), false);
@@ -353,7 +353,7 @@ function initPlayer(streamUrl) {
             if (networkRecoveryAttempts <= 3) {
               hls.startLoad();
             } else {
-              showOverlay('Network unstable. Please refresh stream.', true);
+              showOverlay(t('player.networkUnstable'), true);
             }
             break;
           case Hls.ErrorTypes.MEDIA_ERROR:
@@ -364,8 +364,8 @@ function initPlayer(streamUrl) {
               hls.swapAudioCodec();
               hls.recoverMediaError();
             } else {
-              showOverlay('Media error. Tap play to retry.', true);
-              showOverlay('Media error. Please reload the page.', true);
+              showOverlay(t('player.mediaErrorRetry'), true);
+              showOverlay(t('player.mediaErrorReload'), true);
             }
             break;
           default:
