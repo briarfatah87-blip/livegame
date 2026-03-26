@@ -472,10 +472,10 @@
     }
   };
 
-  // Get saved language or default to Arabic
-  const savedLang = localStorage.getItem('lang') || 'ar';
+  // Get saved language or default to English
+  const savedLang = localStorage.getItem('lang') || 'en';
   document.documentElement.setAttribute('lang', savedLang);
-  if (savedLang === 'ar') document.documentElement.setAttribute('dir', 'rtl');
+  document.documentElement.setAttribute('dir', savedLang === 'ar' ? 'rtl' : 'ltr');
 
   // Expose translation helper globally
   window.__lang = savedLang;
@@ -509,12 +509,7 @@
     window.__lang = next;
     localStorage.setItem('lang', next);
     document.documentElement.setAttribute('lang', next);
-
-    if (next === 'ar') {
-      document.documentElement.setAttribute('dir', 'rtl');
-    } else {
-      document.documentElement.removeAttribute('dir');
-    }
+    document.documentElement.setAttribute('dir', next === 'ar' ? 'rtl' : 'ltr');
 
     // Update toggle button text
     var btn = document.getElementById('lang-toggle');
