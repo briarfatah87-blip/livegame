@@ -283,15 +283,20 @@ app.get('/api/news', (req, res) => {
   const parsedLimit = parseInt(req.query.limit, 10);
   let rows;
 
-  if (Number.isFinite(parsedLimit) && parsedLimit > 0) {
-    const limit = Math.min(parsedLimit, 50);
-    rows = db.prepare(
-      'SELECT * FROM news WHERE is_published = 1 ORDER BY datetime(created_at) DESC LIMIT ?'
-    ).all(limit);
-  } else {
-    rows = db.prepare(
-      'SELECT * FROM news WHERE is_published = 1 ORDER BY datetime(created_at) DESC'
-    ).all();
+  try {
+    if (Number.isFinite(parsedLimit) && parsedLimit > 0) {
+      const limit = Math.min(parsedLimit, 50);
+      rows = db.prepare(
+        'SELECT * FROM news WHERE is_published = 1 ORDER BY created_at DESC LIMIT ?'
+      ).all(limit);
+    } else {
+      rows = db.prepare(
+        'SELECT * FROM news WHERE is_published = 1 ORDER BY created_at DESC'
+      ).all();
+    }
+  } catch (e) {
+    console.error('Error fetching news:', e);
+    return res.json([]);
   }
 
   res.json(rows);
@@ -306,8 +311,12 @@ app.get('/api/news/:id', (req, res) => {
 
 // GET all news for admin
 app.get('/api/admin/news', requireAdmin, (req, res) => {
-  const rows = db.prepare('SELECT * FROM news ORDER BY datetime(created_at) DESC').all();
-  res.json(rows);
+  try {
+    const rows = db.prepare('SELECT * FROM news ORDER BY created_at DESC').all();
+    res.json(rows);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
 // POST create news (admin)
@@ -324,81 +333,105 @@ app.post('/api/admin/news', requireAdmin, (req, res) => {
     return res.status(400).json({ error: 'Title is required' });
   }
 
-  const info = db.prepare(`
-    INSERT INTO news (title, summary, image_url, link_url, is_published, updated_at)
-    VALUES (?, ?, ?, ?, ?, datetime('now'))
-  `).run(
-    title.trim(),
-    summary.trim(),
-    image_url.trim(),
-    link_url.trim(),
-    is_published ? 1 : 0
-  );
+  try {
+    const info = db.prepare(`
+      INSERT INTO news (title, summary, image_url, link_url, is_published, updated_at)
+      VALUES (?, ?, ?, ?, ?, datetime('now'))
+    `).run(
+      title.trim(),
+      summary.trim(),
+      image_url.trim(),
+      link_url.trim(),
+      is_published ? 1 : 0
+    );
 
-  res.json({ id: info.lastInsertRowid, message: 'News created' });
+    res.json({ id: info.lastInsertRowid, message: 'News created' });
+  } catch (e) {
+    res.status(500).json({ error: 'Database error: ' + e.message });
+  }
 });
 
 // PATCH update news (admin)
 app.patch('/api/admin/news/:id', requireAdmin, (req, res) => {
-  const row = db.prepare('SELECT * FROM news WHERE id = ?').get(req.params.id);
-  if (!row) return res.status(404).json({ error: 'News not found' });
+  try {
+    const row = db.prepare('SELECT * FROM news WHERE id = ?').get(req.params.id);
+    if (!row) return res.status(404).json({ error: 'News not found' });
 
-  const {
-    title,
-    summary,
-    image_url,
-    link_url,
-    is_published
-  } = req.body;
+    const {
+      title,
+      summary,
+      image_url,
+      link_url,
+      is_published
+    } = req.body;
 
-  db.prepare(`
-    UPDATE news SET
-      title = COALESCE(?, title),
-      summary = COALESCE(?, summary),
-      image_url = COALESCE(?, image_url),
-      link_url = COALESCE(?, link_url),
-      is_published = COALESCE(?, is_published),
-      updated_at = datetime('now')
-    WHERE id = ?
-  `).run(
-    title?.trim(),
-    summary?.trim(),
-    image_url?.trim(),
-    link_url?.trim(),
-    typeof is_published === 'undefined' ? null : (is_published ? 1 : 0),
-    req.params.id
-  );
+    db.prepare(`
+      UPDATE news SET
+        title = COALESCE(?, title),
+        summary = COALESCE(?, summary),
+        image_url = COALESCE(?, image_url),
+        link_url = COALESCE(?, link_url),
+        is_published = COALESCE(?, is_published),
+        updated_at = datetime('now')
+      WHERE id = ?
+    `).run(
+      title?.trim() ?? null,
+      summary?.trim() ?? null,
+      image_url?.trim() ?? null,
+      link_url?.trim() ?? null,
+      typeof is_published === 'boolean' || typeof is_published === 'number' ? (is_published ? 1 : 0) : null,
+      req.params.id
+    );
 
-  res.json({ message: 'News updated' });
+    res.json({ message: 'News updated' });
+  } catch (e) {
+    res.status(500).json({ error: 'Database error: ' + e.message });
+  }
 });
 
 // DELETE news (admin)
 app.delete('/api/admin/news/:id', requireAdmin, (req, res) => {
-  db.prepare('DELETE FROM news WHERE id = ?').run(req.params.id);
-  res.json({ message: 'News deleted' });
+  try {
+    db.prepare('DELETE FROM news WHERE id = ?').run(req.params.id);
+    res.json({ message: 'News deleted' });
+  } catch (e) {
+    res.status(500).json({ error: 'Database error: ' + e.message });
+  }
 });
 
 // ─── Match News (short per-game news items) ───────────────────────────────────
 // GET all news for a match (public)
 app.get('/api/matches/:id/news', (req, res) => {
-  const items = db.prepare('SELECT * FROM match_news WHERE match_id = ? ORDER BY created_at DESC').all(req.params.id);
-  res.json(items);
+  try {
+    const items = db.prepare('SELECT * FROM match_news WHERE match_id = ? ORDER BY created_at DESC').all(req.params.id);
+    res.json(items);
+  } catch (e) {
+    res.json([]);
+  }
 });
 
 // POST add news to a match (admin)
 app.post('/api/admin/matches/:id/news', requireAdmin, (req, res) => {
-  const { title_en, title_ar } = req.body;
-  if (!title_en && !title_ar) return res.status(400).json({ error: 'At least one title is required' });
-  const info = db.prepare(
-    'INSERT INTO match_news (match_id, title_en, title_ar) VALUES (?, ?, ?)'
-  ).run(req.params.id, (title_en || '').trim(), (title_ar || '').trim());
-  res.json({ id: info.lastInsertRowid, message: 'Match news added' });
+  try {
+    const { title_en, title_ar } = req.body;
+    if (!title_en && !title_ar) return res.status(400).json({ error: 'At least one title is required' });
+    const info = db.prepare(
+      'INSERT INTO match_news (match_id, title_en, title_ar) VALUES (?, ?, ?)'
+    ).run(req.params.id, (title_en || '').trim(), (title_ar || '').trim());
+    res.json({ id: info.lastInsertRowid, message: 'Match news added' });
+  } catch (e) {
+    res.status(500).json({ error: 'Database error: ' + e.message });
+  }
 });
 
 // DELETE a match news item (admin)
 app.delete('/api/admin/match-news/:newsId', requireAdmin, (req, res) => {
-  db.prepare('DELETE FROM match_news WHERE id = ?').run(req.params.newsId);
-  res.json({ message: 'Match news deleted' });
+  try {
+    db.prepare('DELETE FROM match_news WHERE id = ?').run(req.params.newsId);
+    res.json({ message: 'Match news deleted' });
+  } catch (e) {
+    res.status(500).json({ error: 'Database error: ' + e.message });
+  }
 });
 
 // Admin verify token
