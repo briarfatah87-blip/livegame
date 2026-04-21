@@ -440,19 +440,39 @@ input, textarea { font-family: var(--font); }
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--bg-card);
-  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+  position: relative;
+}
+
+.news-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 50%, rgba(0, 230, 118, 0.05) 100%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
 }
 
 .news-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(41, 121, 255, 0.3);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-5px);
+  border-color: rgba(0, 230, 118, 0.4);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 230, 118, 0.15);
+}
+
+:root[data-theme="light"] .news-card:hover {
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12), 0 0 20px rgba(0, 168, 84, 0.15);
+}
+
+.news-card:hover::after {
+  opacity: 1;
 }
 
 .news-image-wrap {
   height: 170px;
   background: linear-gradient(135deg, rgba(41, 121, 255, 0.18), rgba(0, 230, 118, 0.1));
   border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
 }
 
 .news-image-wrap img {
@@ -460,6 +480,11 @@ input, textarea { font-family: var(--font); }
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.news-card:hover .news-image-wrap img {
+  transform: scale(1.08);
 }
 
 .news-image-fallback {
@@ -488,6 +513,11 @@ input, textarea { font-family: var(--font); }
   font-size: 18px;
   line-height: 1.3;
   margin-bottom: 8px;
+  transition: color 0.3s ease;
+}
+
+.news-card:hover .news-title {
+  color: var(--accent);
 }
 
 .news-summary {
@@ -531,10 +561,14 @@ input, textarea { font-family: var(--font); }
 
 .news-detail-card {
   background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border);
+  border-top: 4px solid var(--accent);
   border-radius: var(--radius-lg);
-  padding: 28px;
-  box-shadow: var(--shadow);
+  padding: 32px;
+  box-shadow: var(--shadow-lg);
+  position: relative;
 }
 
 .news-detail-meta {

@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ─── Panel switching ──────────────────────────────────────────────────────────
 function showPanel(panel, skipReset = false) {
   document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.admin-nav button, .admin-nav a').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.admin-sidebar button, .admin-sidebar a').forEach(b => b.classList.remove('active'));
 
   document.getElementById(`panel-${panel}`).classList.add('active');
   const navBtn = document.getElementById(`nav-${panel}`);
